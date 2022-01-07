@@ -40,6 +40,17 @@ int main() {
         std::cout << vec[i] << ' ';
     }
 
+    mc::pair<std::string, int> marnix{"Marnix", 20};
+    mc::pair<std::string, int> camiel{"Camiel", 20};
+
+    mc::pair<int, std::string> setie;
+
+    mc::pair<std::string, int> pairArray[10];
+
+    pairArray[1] = camiel;
+
+    std::cout << pairArray[1];
+
     mc::vector<mc::pair<std::string, int>> set;
 
     set.push_back(mc::pair<std::string, int>{"One", 1});

@@ -26,6 +26,8 @@ namespace mc {
         using second_reference = T2&;
         using second_const_reference = const T2&;
 
+        pair(){}
+
         // Default constructor
         pair(T1 first, T2 second): m_first {first}, m_second {second} {}
 
@@ -34,8 +36,8 @@ namespace mc {
 
         // Copy assignment operator
         pair& operator=(pair other) {
-            std::swap(m_first, other.first());
-            std::swap(m_second, other.second());
+            m_first = other.first();
+            m_second = other.second();
             return *this;
         }
 
