@@ -42,9 +42,26 @@ namespace mc {
             return *this;
         }
 
+        // > compare operator
+        bool operator>(pair other) {
+            if (m_first == other.first()) {
+                return m_second > other.second();
+            }
+            return m_first > other.first();
+        }
+
+        // < compare operator
+        bool operator<(pair other) {
+            if (m_first == other.first()) {
+                return m_second < other.second();
+            }
+            return m_first < other.first();
+        }
+
         // Print function
         [[maybe_unused]] void print(std::ostream& stream = std::cout) {
             stream << "(" << m_first << ", " << m_second << ")";
+
             // We don't add a newline or std::endl because we might already do that in
             // the call to std::cout << ...
         }
@@ -71,8 +88,9 @@ namespace mc {
 
         // Function for swapping first and second
         // This only works if the T1 and T2 are of the same type
-        [[maybe_unused]] void swap() {
+        [[maybe_unused]] pair& swap() {
             std::swap(m_first, m_second);
+            return *this;
         }
 
         [[maybe_unused]] std::size_t size() {
