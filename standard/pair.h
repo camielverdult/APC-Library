@@ -8,8 +8,7 @@
 #include <algorithm>
 #include <iostream>
 
-// marnix camiel
-
+// marnix camiel namespace
 namespace mc {
 
     template <typename T1, typename T2>
@@ -71,15 +70,6 @@ namespace mc {
             return *this;
         }
 
-        template <std::size_t I>
-        [[maybe_unused]] constexpr T1& get(std::pair<T1, T2>& pair) noexcept {
-            if (I == 0) {
-                return m_first();
-            } else if (I == 1) {
-                return m_second();
-            }
-        }
-
     private:
         T1 m_first;
         T2 m_second;
@@ -90,6 +80,11 @@ namespace mc {
     std::ostream& operator<<(std::ostream& stream, pair<T1, T2>& other) {
         stream << "(" << other.first() << ", " << other.second() << ")";
         return stream;
+    }
+
+    template <typename T1, typename T2>
+    pair<T1, T2>& make_pair(T1 first, T2 second) {
+        return pair{first, second};
     }
 };
 

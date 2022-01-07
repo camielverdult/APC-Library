@@ -9,9 +9,7 @@ int main() {
 
     mc::pair ja{"Hallo", 1};
 
-    mc::pair kopie = ja;
-
-    std::cout << kopie;
+    auto onetwo = mc::make_pair(1, 2);
 
     return 0;
 }
