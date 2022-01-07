@@ -39,8 +39,11 @@ namespace mc {
             return *this;
         }
 
+        // Print function
         [[maybe_unused]] void print(std::ostream& stream = std::cout) {
             stream << "(" << m_first << ", " << m_second << ")";
+            // We don't add a newline or std::endl because we might already do that in
+            // the call to std::cout << ...
         }
 
         // Getter function for first
@@ -70,6 +73,10 @@ namespace mc {
             return *this;
         }
 
+        [[maybe_unused]] std::size_t size() {
+            return sizeof(this);
+        }
+
     private:
         T1 m_first;
         T2 m_second;
@@ -78,12 +85,12 @@ namespace mc {
     // Out stream operator for pair
     template <typename T1, typename T2>
     std::ostream& operator<<(std::ostream& stream, pair<T1, T2>& other) {
-        stream << "(" << other.first() << ", " << other.second() << ")";
+        other.print();
         return stream;
     }
 
     template <typename T1, typename T2>
-    pair<T1, T2>& make_pair(T1 first, T2 second) {
+    [[maybe_unused]] pair<T1, T2>& make_pair(T1 first, T2 second) {
         return pair{first, second};
     }
 };
