@@ -75,7 +75,7 @@ int main() {
     std::mt19937 mtw;
     mtw.seed((int)time(nullptr));
 
-    uint64_t iterations = mtw() / pow(2, 20);
+    uint64_t iterations = mtw() % (uint64_t)pow(2, 20);
 
     std::cout << "Iterations: " << iterations << std::endl;
 
@@ -86,8 +86,6 @@ int main() {
     std::cout << "Sorting " << unsorted.size() << " elements..." << std::endl;
 
     unsorted.sort();
-
-    unsorted.print();
 
     return 0;
 }
