@@ -66,11 +66,10 @@ namespace mc {
             return m_second;
         }
 
-        // Swap function
-        [[maybe_unused]] pair& swap(pair other) {
-            std::swap(m_first, other.first());
-            std::swap(m_second, other.second());
-            return *this;
+        // Function for swapping first and second
+        // This only works if the T1 and T2 are of the same type
+        [[maybe_unused]] void swap() {
+            std::swap(m_first, m_second);
         }
 
         [[maybe_unused]] std::size_t size() {

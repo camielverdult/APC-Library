@@ -5,5 +5,5 @@ set(CMAKE_CXX_STANDARD 20)
 
 include_directories(standard)
 
-add_executable(APC_Library main.cpp standard/pair.h)
+add_executable(APC_Library main.cpp standard/pair.h standard/vector.h)
 
