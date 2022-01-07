@@ -33,3 +33,6 @@
 
 # CLion files
 .idea*
+
+# Build files
+cmake-build-*
