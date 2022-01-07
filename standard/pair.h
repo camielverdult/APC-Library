@@ -5,6 +5,8 @@
 #ifndef APC_LIBRARY_PAIR_H
 #define APC_LIBRARY_PAIR_H
 
+#include <algorithm>
+
 template <typename T1, typename T2>
 class pair {
 
@@ -20,6 +22,25 @@ public:
     using second_const_reference = const T2&;
 
     pair(T1 first, T2 second): m_first {first}, m_second (second) {}
+
+    ~pair(){
+        delete m_first;
+        delete m_second;
+    }
+
+    pair& operator=(pair other) {
+        std::swap(m_first, other.first());
+        std::swap(m_second, other.second());
+        return *this;
+    }
+
+    T1 first() {
+        return m_first;
+    }
+
+    T2 second() {
+        return m_second;
+    }
 
 private:
     T1* m_first;
