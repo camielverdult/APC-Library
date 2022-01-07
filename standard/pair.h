@@ -26,6 +26,7 @@ namespace mc {
         using second_reference = T2&;
         using second_const_reference = const T2&;
 
+        // Empty constructor
         pair(){}
 
         // Default constructor
