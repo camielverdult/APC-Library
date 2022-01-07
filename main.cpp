@@ -7,9 +7,9 @@
 
 int main() {
 
-    pair ja{"Hallo", 1};
+    mc::pair ja{"Hallo", 1};
 
-    pair kopie = ja;
+    mc::pair kopie = ja;
 
     std::cout << kopie;
 
