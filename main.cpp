@@ -42,7 +42,8 @@ int main() {
 
     mc::vector<mc::pair<std::string, int>> set;
 
-
+    set.push_back(mc::pair<std::string, int>{"One", 1});
+    set.push_back(mc::pair<std::string, int>{"Two", 2});
 
     return 0;
 }
