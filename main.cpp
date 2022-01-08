@@ -7,6 +7,7 @@
 #include <vector>
 #include "standard/vector.h"
 #include <random>
+#include <chrono>
 
 int main() {
     /*
@@ -74,8 +75,8 @@ int main() {
     // For more information about the working of the mersenne twister
     std::mt19937 mtw;
     mtw.seed((int)time(nullptr));
-
-    uint64_t iterations = mtw() % (uint64_t)pow(2, 20);
+ 
+    int iterations = 100000;
 
     std::cout << "Iterations: " << iterations << std::endl;
 
@@ -83,9 +84,15 @@ int main() {
         unsorted.push_back(mtw());
     }
 
-    std::cout << "Sorting " << unsorted.size() << " elements..." << std::endl;
+    auto start = std::chrono::high_resolution_clock::now();
 
     unsorted.sort();
+
+    auto finish = std::chrono::high_resolution_clock::now();
+    std::cout << "Sorted " << unsorted.size() << " elements in " << std::chrono::duration_cast<std::chrono::milliseconds>(finish-start).count() << " ms\n";
+
+    // Uncomment this for wall of text
+//    unsorted.print();
 
     return 0;
 }

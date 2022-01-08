@@ -141,6 +141,8 @@ namespace mc {
             std::sort(begin(), end(), [](T& a, T& b){
                 return a > b;
             });
+
+            return *this;
         }
 
         T* begin() {
