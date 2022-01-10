@@ -76,7 +76,7 @@ int main() {
     std::mt19937 mtw;
     mtw.seed((int)time(nullptr));
  
-    int iterations = 300000;
+    int iterations = 100000;
 
     std::cout << "Iterations: " << iterations << std::endl;
 
