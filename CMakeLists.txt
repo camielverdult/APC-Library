@@ -6,7 +6,9 @@ set(CMAKE_CXX_STANDARD 20)
 include_directories(standard)
 
 # Set options for gnu-like
-add_compile_options(-Wall -Wextra -Wpedantic -Werror -fno-omit-frame-pointer -O3)
+add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 
-add_executable(APC_Library main.cpp standard/pair.h standard/vector.h)
+add_compile_options(-fno-omit-frame-pointer )
+
+add_executable(APC_Library main.cpp standard/pair.h standard/vector.h standard/map.h)
 

@@ -69,14 +69,14 @@ int main() {
     std::cout << set.erase(1) << std::endl;
 
     // Fill an array with random numbers and sort them
-    mc::vector<uint64_t> unsorted;
+    mc::vector<uint32_t> unsorted;
 
     // Use mersenne twister to generate random numbers, see our previous topic
     // For more information about the working of the mersenne twister
     std::mt19937 mtw;
     mtw.seed((int)time(nullptr));
  
-    int iterations = 100000;
+    int iterations = 300000;
 
     std::cout << "Iterations: " << iterations << std::endl;
 
