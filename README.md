@@ -41,7 +41,7 @@ pair( const pair& p ) = default;
 These are the two default constructors and a copy constructor. The first constructor initializes an empty pair of types T1 and T2, whereas the second constructor takes two types and sets the values of m_first and m_second to these passed variables.
 The third constructor takes an existing pair and copies its m_first and m_second values into its own.
 
-std::pair doesn't need a generic get function, as it only ever has two member variables. Instead, it has the fuctions `first()` and `second()`.
+std::pair doesn't need a generic get function, as it only ever has two member variables. Instead, it has the functions `first()` and `second()`.
 An implementation of these functions looks as follows:
 
 ```c
