@@ -5,56 +5,118 @@
 #ifndef APC_LIBRARY_MAP_H
 #define APC_LIBRARY_MAP_H
 
-#include "pair.h"
-#include "vector.h"
-
 namespace mc {
 
-    template <typename TKey, typename TValue>
-    class map: mc::vector<mc::pair<TKey, TValue>> {
+    template<typename TKey, typename TValue>
+    class map { // This whole class is a wrapper around an mc::vector<mc::pair>
     public:
-        map(TKey key, TValue value): m_vector {} {}
 
-        std::size_t capacity() {
-            return m_vector.m_cap;
+        using first_type = TKey;
+        using first_pointer = TKey*;
+        using first_reference = TKey&;
+        using first_const_reference = const TKey&;
+
+        using second_type = TValue;
+        using second_pointer = TValue*;
+        using second_reference = TValue&;
+        using second_const_reference = const TValue&;
+
+        using pair_template = mc::pair<TKey, TValue>;
+
+        // Default constructor
+        [[maybe_unused]] explicit map() : m_vector {} {}
+
+        // Copy constructor
+        map(const map &other) : m_vector {other.raw()} {}
+
+        [[maybe_unused]] std::size_t capacity() {
+            /* This function returns the capacity of the underlying vector */
+            return m_vector.capacity();
         }
 
-        std::size_t size() {
-            return m_vector.m_sz;
+        [[maybe_unused]] std::size_t size() {
+            /* This function returns the size of the underlying vector */
+            return m_vector.size();
         }
 
         [[maybe_unused]] [[nodiscard]] std::size_t capacity() const {
-            return m_vector.m_cap;
+            /* This function returns the capacity of the underlying vector as a const */
+            return m_vector.capacity();
         }
 
         [[maybe_unused]] [[nodiscard]] std::size_t size() const {
-            return m_vector.m_sz;
+            /* This function returns the size of the underlying vector as a const */
+            return m_vector.size();
         }
 
-        mc::pair<TKey, TValue>* raw() {
+        [[maybe_unused]] std::pair<TKey, TValue>* raw() {
+            /* This function returns the raw pointer of the underlying vector */
             return m_vector.raw();
         }
 
-        // Copy assignment operator
-        map& operator=(map other) {
-            std::copy(other.m_vector.raw(), m_vector);
-            m_cap = other.capacity();
-            m_sz = other.size();
-
-            return *this;
-        }
-
-        [[maybe_unused]] void insert(mc::pair<TKey,TValue> entry) {
-            m_vector._adjust_cap();
+        [[maybe_unused]] void push_back(pair_template entry) {
             m_vector.push_back(entry);
         }
 
+        [[maybe_unused]] void insert(pair_template entry) {
+            m_vector.insert(entry);
+        }
+
+        [[maybe_unused]] void pop_back() {
+            m_vector.pop_back();
+        }
+
+        [[maybe_unused]] mc::pair<TKey, TValue> &at(std::size_t index) {
+            return m_vector.at(index);
+        }
+
+        [[maybe_unused]] mc::pair<TKey, TValue> &at(std::size_t index) const {
+            return m_vector.at(index);
+        }
+
+        [[maybe_unused]] void erase() {
+            m_vector.erase(index);
+        }
+
+        [[maybe_unused]] mc::pair<TKey, TValue> &&erase(std::size_t index) {
+            return m_vector.erase(index);
+        }
+
+        // Debug print function
+        [[maybe_unused]] void debug_print(std::ostream& stream = std::cout) {
+            m_vector.debug_print(stream);
+        }
+
+        // Print function
+        [[maybe_unused]] void print(std::ostream& stream = std::cout) {
+            m_vector.print(stream);
+        }
+
+        // Copy assignment operator
+        [[maybe_unused]] map &operator=(map other) {
+            // The operator= from vector should handle this
+            m_vector = other;
+        }
+
+        [[maybe_unused]] mc::pair <TKey, TValue> &operator[](std::size_t index) {
+            return m_vector[index];
+        }
+
+        [[maybe_unused]] const mc::pair<TKey, TValue> &operator[](std::size_t index) const {
+            return m_vector[index];
+        }
 
     private:
-        mc::vector<mc::pair<TKey, TValue>> m_vector;
-//        std::size_t m_cap;
-//        std::size_t m_sz;
+        mc::vector<pair_template> m_vector;
+    };
 
+    // Out stream operator for pair
+    template<typename TKey, typename TValue>
+    std::ostream& operator<<(std::ostream& stream, map<TKey, TValue>& other) {
+        other.print(stream);
+        return stream;
     }
+
+}
 
 #endif //APC_LIBRARY_MAP_H

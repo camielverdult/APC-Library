@@ -37,11 +37,11 @@ namespace mc {
             delete[] m_data;
         }
 
-        std::size_t capacity() {
+        [[maybe_unused]] std::size_t capacity() {
             return m_cap;
         }
 
-        std::size_t size() {
+        [[maybe_unused]] std::size_t size() {
             return m_sz;
         }
 
@@ -54,7 +54,7 @@ namespace mc {
         }
 
         // Copy assignment operator
-        vector& operator=(vector other) {
+        [[maybe_unused]] vector& operator=(vector other) {
             std::copy(other.raw(), m_data);
             m_cap = other.capacity();
             m_sz = other.size();
@@ -62,7 +62,7 @@ namespace mc {
             return *this;
         }
 
-        T* raw() {
+        [[maybe_unused]] T* raw() {
             return m_data;
         }
 
@@ -71,7 +71,15 @@ namespace mc {
             m_data[m_sz++] = entry;
         }
 
-        [[maybe_unused]] T* at(std::size_t index) {
+        [[maybe_unused]] T& at(std::size_t index) {
+            if (index >= m_sz) {
+                return nullptr;
+            }
+
+            return m_data[index];
+        }
+
+        [[maybe_unused]] T& at(std::size_t index) const {
             if (index >= m_sz) {
                 return nullptr;
             }
@@ -83,12 +91,12 @@ namespace mc {
             --m_sz;
         }
 
-        T& operator[](std::size_t index){
-            return m_data[index];
+        [[maybe_unused]] T& operator[](std::size_t index){
+            return this->at(index);
         }
 
-        const T& operator[](std::size_t index) const{
-            return m_data[index];
+        [[maybe_unused]] const T& operator[](std::size_t index) const {
+            return this->at(index);
         }
 
         [[maybe_unused]] void erase() {
@@ -114,8 +122,8 @@ namespace mc {
             return *this;
         }
 
-        // Print function
-        [[maybe_unused]] void debug_print(std::ostream& stream = std::cout) {
+        // Debug print function
+        void debug_print(std::ostream& stream = std::cout) {
             for (std::size_t i = 0; i < m_sz; i++)
                 stream << "Index: " << i << " = " << m_data[i];
             // We don't add a newline or std::endl because we might already do that in
@@ -123,7 +131,7 @@ namespace mc {
         }
 
         // Print function
-        [[maybe_unused]] void print(std::ostream& stream = std::cout) {
+        void print(std::ostream& stream = std::cout) {
             for (std::size_t i = 0; i < m_sz; i++) {
                 stream << m_data[i];
                 if (i != m_sz - 1)

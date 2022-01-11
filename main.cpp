@@ -3,9 +3,10 @@
 //
 
 #include "standard/pair.h"
+#include "standard/vector.h"
+#include "standard/map.h"
 #include <iostream>
 #include <vector>
-#include "standard/vector.h"
 #include <random>
 #include <chrono>
 
@@ -14,6 +15,13 @@ int main() {
      * Our main function will display functionality in our std::vector and std::pair re-makes
      * Please take a look at the header for all functions, some are not used here
      */
+
+    mc::map<std::string, uint64_t> values;
+
+    values.push_back(mc::pair<std::string, uint64_t>{"Hi", 1});
+    std::cout << values << "\n";
+
+    return 0;
 
     mc::pair pairOfVectorInt{std::vector<std::string>{"hallo"}, 1};
 

@@ -36,3 +36,4 @@
 
 # Build files
 cmake-build-*
+.DS_Store
