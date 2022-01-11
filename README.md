@@ -55,4 +55,4 @@ template <typename T1>
     }
 ```
 
-These functions speak for themselves as they simply return one member variable, which can then be used separately.
+These functions speak for themselves as they simply return one member variable.
