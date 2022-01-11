@@ -36,16 +36,25 @@ namespace mc {
         }
 
         // Copy assignment operator
-        vector& operator=(map other) {
-            std::copy(other.raw(), m_data);
+        map& operator=(map other) {
+            std::copy(other.m_vector.raw(), m_vector);
             m_cap = other.capacity();
             m_sz = other.size();
 
             return *this;
         }
 
-private:
-    mc::vector<mc::pair<TKey, TValue>> m_vector;
-}
+        [[maybe_unused]] void insert(mc::pair<TKey,TValue> entry) {
+            m_vector._adjust_cap();
+            m_vector.push_back(entry);
+        }
+
+
+    private:
+        mc::vector<mc::pair<TKey, TValue>> m_vector;
+//        std::size_t m_cap;
+//        std::size_t m_sz;
+
+    }
 
 #endif //APC_LIBRARY_MAP_H
