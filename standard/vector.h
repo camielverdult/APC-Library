@@ -184,6 +184,6 @@ namespace mc {
         return stream;
     }
 
-};
+}
 
 #endif //APC_LIBRARY_VECTOR_H

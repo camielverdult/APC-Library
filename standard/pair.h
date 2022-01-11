@@ -27,7 +27,7 @@ namespace mc {
         using second_const_reference = const T2&;
 
         // Empty constructor
-        pair(){}
+        pair()= default;
 
         // Default constructor
         pair(T1 first, T2 second): m_first {first}, m_second {second} {}
@@ -94,7 +94,7 @@ namespace mc {
         }
 
         [[maybe_unused]] std::size_t size() {
-            return sizeof(this);
+            return sizeof(*this);
         }
 
     private:

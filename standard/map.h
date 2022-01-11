@@ -92,6 +92,22 @@ namespace mc {
             m_vector.print(stream);
         }
 
+        [[maybe_unused]] mc::vector<pair_template>& sort() {
+            /*
+             * This function will fail if typename T has no operator > function
+             */
+
+            return m_vector.sort();
+        }
+
+        pair_template* begin() {
+            return m_vector.begin();
+        }
+
+        pair_template* end() {
+            return m_vector.end();
+        }
+
         // Copy assignment operator
         [[maybe_unused]] map &operator=(map other) {
             // The operator= from vector should handle this
