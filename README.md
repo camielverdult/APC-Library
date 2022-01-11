@@ -45,7 +45,7 @@ std::pair doesn't need a generic get function, as it only ever has two member va
 An implementation of these functions looks as follows:
 
 ```c
-template <typename T1>
+template <typename T1, typename T2>
     T1 first(){
         return m_first;
     }
@@ -55,4 +55,4 @@ template <typename T1>
     }
 ```
 
-These functions speak for themselves as they simply return one member variable.
+These functions speak for themselves as they simply return one member variable of type T1 or T2.
