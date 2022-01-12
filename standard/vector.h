@@ -66,12 +66,24 @@ namespace mc {
             return m_data;
         }
 
-        [[maybe_unused]] void push_back(T entry) {
+        [[maybe_unused]] void push_back(value_type entry) {
             _adjust_cap();
             m_data[m_sz++] = entry;
         }
 
-        [[maybe_unused]] T& at(std::size_t index) {
+        [[maybe_unused]] reference insert(const std::size_t index, const value_type entry) {
+            if (index >= m_sz) {
+                return nullptr;
+            }
+
+            _adjust_cap();
+
+            std::copy(*m_data[index], end(), *m_data[index + 1]);
+
+            m_data[m_sz++] = entry;
+        }
+
+        [[maybe_unused]] reference at(std::size_t index) {
             if (index >= m_sz) {
                 return nullptr;
             }
@@ -79,7 +91,7 @@ namespace mc {
             return m_data[index];
         }
 
-        [[maybe_unused]] T& at(std::size_t index) const {
+        [[maybe_unused]] reference at(std::size_t index) const {
             if (index >= m_sz) {
                 return nullptr;
             }
@@ -91,11 +103,11 @@ namespace mc {
             --m_sz;
         }
 
-        [[maybe_unused]] T& operator[](std::size_t index){
+        [[maybe_unused]] reference operator[](std::size_t index){
             return this->at(index);
         }
 
-        [[maybe_unused]] const T& operator[](std::size_t index) const {
+        [[maybe_unused]] const_reference operator[](std::size_t index) const {
             return this->at(index);
         }
 
@@ -146,7 +158,7 @@ namespace mc {
              * This function will fail if typename T has no operator > function
              */
 
-            std::sort(begin(), end(), [](T& a, T& b){
+            std::sort(begin(), end(), [](reference a, reference b){
                 return a > b;
             });
 
