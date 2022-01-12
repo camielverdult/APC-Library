@@ -7,17 +7,17 @@ The C++ standard library takes away the need to set these containers up yourself
 
 Where this is good on one hand, the fact that these container types are given to us ready to be used can cause you to make mistakes in implementing the containers, as you might not fully understand the basics behind them.
 
-To fix this potential lack of knowledge, we will dive into std::vector and std::pair of the C++ standard library.
+To fix this potential lack of knowledge, we will dive into `std::vector` and `std::pair` of the C++ standard library.
 We will first look into how these containers are implemented in the standard library, after which we will implement our own (basic) version of the containers.
 
-##std::pair
+##`std::pair`
 
 
-[cppreference](https://en.cppreference.com/w/cpp/utility/pair) describes std::pair as follows:
+[cppreference](https://en.cppreference.com/w/cpp/utility/pair) describes `std::pair` as follows:
 
 ![img.png](Imgs/cppreference_pair.png)
 
-std::pair is a special type of std::tuple. Where std::tuple doesn't have a fixed number of member variables, std::pair only ever has two.
+`std::pair` is a special type of `std::tuple`. Where std::tuple doesn't have a fixed number of member variables, `std::pair` only ever has two.
 
 As a C++ class this would look like:
 
@@ -28,9 +28,9 @@ class pair{
     T2 m_second;
 };
 ```
-Where m_first and m_second are the pair's private member variables of types T1 and T2.
+Where `m_first` and `m_second` are the pair's private member variables of types `T1` and `T2`.
 
-This template shows a simple struct that holds two class variables T1 and T2. std::pair has several basic member functions, such as a few constructors among which:
+This template shows a simple struct that holds two class variables `T1` and `T2`. `std::pair` has several basic member functions, such as a few constructors among which:
 ```c
 template <typename T1, typename T2>
 
