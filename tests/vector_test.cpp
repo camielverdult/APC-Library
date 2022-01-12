@@ -63,15 +63,15 @@ TEST(vector, sort) {
     ASSERT_EQ(*int_vector.raw(), *numbers) << "mc::vector sort failed:";
 }
 
-TEST(vector, insert) {
-    // Initialise empty vector
-    mc::vector<int> int_vector{};
-
-
-    // Add 1000 elements to both the vector and the int array
-    for (std::size_t i = 0; i < 10; i++) {
-        int_vector.push_back(i);
-    }
-
-    int_vector.insert(4, 2);
-}
+//TEST(vector, insert) {
+//    // Initialise empty vector
+//    mc::vector<int> int_vector{};
+//
+//
+//    // Add 1000 elements to both the vector and the int array
+//    for (std::size_t i = 0; i < 10; i++) {
+//        int_vector.push_back(i);
+//    }
+//
+//    int_vector.insert(4, 2);
+//}
