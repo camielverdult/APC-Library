@@ -5,6 +5,9 @@
 #ifndef APC_LIBRARY_MAP_H
 #define APC_LIBRARY_MAP_H
 
+#include "pair.h"
+#include "vector.h"
+
 namespace mc {
 
     template<typename TKey, typename TValue>
@@ -22,6 +25,7 @@ namespace mc {
         using second_const_reference = const TValue&;
 
         using pair_template = mc::pair<TKey, TValue>;
+        using vector_template = mc::vector<pair_template>;
 
         // Default constructor
         [[maybe_unused]] explicit map() : m_vector {} {}
@@ -92,7 +96,7 @@ namespace mc {
             m_vector.print(stream);
         }
 
-        [[maybe_unused]] mc::vector<pair_template>& sort() {
+        [[maybe_unused]] vector_template& sort() {
             /*
              * This function will fail if typename T has no operator > function
              */
@@ -123,7 +127,7 @@ namespace mc {
         }
 
     private:
-        mc::vector<pair_template> m_vector;
+        vector_template m_vector;
     };
 
     // Out stream operator for pair

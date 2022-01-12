@@ -2,9 +2,9 @@
 // Created by Camiel Verdult on 1/7/2022.
 //
 
-#include "standard/pair.h"
-#include "standard/vector.h"
-#include "standard/map.h"
+#include "pair.h"
+#include "vector.h"
+#include "map.h"
 #include <iostream>
 #include <vector>
 #include <random>
