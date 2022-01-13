@@ -116,6 +116,7 @@ namespace mc {
         [[maybe_unused]] map &operator=(map other) {
             // The operator= from vector should handle this
             m_vector = other;
+            return *this;
         }
 
         [[maybe_unused]] mc::pair <TKey, TValue> &operator[](std::size_t index) {
