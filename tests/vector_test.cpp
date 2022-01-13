@@ -16,14 +16,15 @@ TEST(vector, creation) {
 
 TEST(vector, int_array_compare) {
     // Initialise empty vector
-    mc::vector<int> int_vector{};
+    mc::vector<int> int_vector{1000};
+
+    std::iota(int_vector.begin(), int_vector.end(), 0);
 
     // Initialise int array
     int numbers[1000];
 
     // Add 1000 elements to both the vector and the int array
     for (std::size_t i = 0; i < 1000; i++) {
-        int_vector.push_back(i);
         numbers[i] = i;
     }
 
@@ -65,13 +66,10 @@ TEST(vector, sort) {
 
 //TEST(vector, insert) {
 //    // Initialise empty vector
-//    mc::vector<int> int_vector{};
+//    mc::vector<int> int_vector{100};
 //
 //
-//    // Add 1000 elements to both the vector and the int array
-//    for (std::size_t i = 0; i < 10; i++) {
-//        int_vector.push_back(i);
-//    }
+//    std::iota(int_vector.begin(), int_vector.end(), 0);
 //
 //    int_vector.insert(4, 2);
 //}

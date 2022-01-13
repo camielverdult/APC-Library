@@ -73,7 +73,6 @@ namespace mc {
 
         [[maybe_unused]] reference insert(const std::size_t index, const value_type entry) {
             if (index >= m_sz) {
-                return nullptr;
             }
 
             _adjust_cap();
@@ -85,7 +84,6 @@ namespace mc {
 
         [[maybe_unused]] reference at(std::size_t index) {
             if (index >= m_sz) {
-                return nullptr;
             }
 
             return m_data[index];
@@ -170,7 +168,9 @@ namespace mc {
         }
 
         T* end() {
-            return &m_data[m_sz];
+            // This will point to the last element in our vector
+            // To be used in std algorithm functions
+            return &m_data[m_cap];
         }
 
     private:
