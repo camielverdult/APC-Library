@@ -19,6 +19,9 @@ add_executable(
         standard/map.h
 )
 
+# How to add gtest to your CMakeLists.txt:
+# https://github.com/google/googletest/tree/main/googletest#incorporating-into-an-existing-cmake-project
+
 # Download gtest
 include(FetchContent)
 
@@ -32,8 +35,6 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(googletest)
-
-enable_testing()
 
 # Setup our testing executable
 set(tests_target mc_lib_tests)
