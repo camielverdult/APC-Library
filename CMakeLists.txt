@@ -36,11 +36,11 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 # Setup our testing executable
-set(tests mc_lib_tests)
+set(tests_target mc_lib_tests)
 
 add_executable(
         # Executable name, set above
-        ${tests}
+        ${tests_target}
 
         # This runs the tests
         tests/test_runner.cpp
