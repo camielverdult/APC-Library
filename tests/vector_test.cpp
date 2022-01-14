@@ -64,12 +64,15 @@ TEST(vector, sort) {
     ASSERT_EQ(*int_vector.raw(), *numbers) << "mc::vector sort failed:";
 }
 
-//TEST(vector, insert) {
-//    // Initialise empty vector
-//    mc::vector<int> int_vector{100};
-//
-//
-//    std::iota(int_vector.begin(), int_vector.end(), 0);
-//
-//    int_vector.insert(4, 2);
-//}
+TEST(vector, insert) {
+    // Initialise empty vector
+    mc::vector<int> int_vector{10};
+
+    std::iota(int_vector.begin(), int_vector.end(), 0);
+
+    int_vector.insert(4, 2);
+
+    int check[] {1, 2, 3, 4, 2, 5, 6, 7, 8, 9};
+
+    ASSERT_EQ(*int_vector.raw(), *check) << "Insert does not insert at the right place!";
+}

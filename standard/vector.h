@@ -21,12 +21,16 @@ namespace mc {
         using reference = T&;
         using const_reference = const T&;
 
-        explicit vector(std::size_t capacity):
+        vector(std::size_t capacity):
                 m_data{ new T[capacity]},
                 m_cap{ capacity },
                 m_sz{ 0 } {}
 
         vector(): vector(DEFAULT_CAP) {};
+
+        vector(initializer_list<T>) : vector() {
+
+        };
 
         // Copy constructor
         vector(const vector& other): m_data{ new T[other.capacity()]},
@@ -71,19 +75,29 @@ namespace mc {
             m_data[m_sz++] = entry;
         }
 
-        [[maybe_unused]] reference insert(const std::size_t index, const value_type entry) {
-            if (index >= m_sz) {
+        [[maybe_unused]] void insert(const std::size_t index, const value_type entry) {
+            if (m_sz == 0) {
+                push_back(entry);
+                return;
+            } else if (index >= m_sz) {
+                // Index is out of bounds
+                return;
             }
 
             _adjust_cap();
 
-            std::copy(*m_data[index], end(), *m_data[index + 1]);
+//            std::copy(*m_data[index], end(), *m_data[index + 1]);
+            for (size_t i = m_sz; i > index; i--) {
+                m_data[i + 1] = m_data[i];
+            }
 
             m_data[m_sz++] = entry;
         }
 
         [[maybe_unused]] reference at(std::size_t index) {
             if (index >= m_sz) {
+                // Index is out of bounds
+                return nullptr;
             }
 
             return m_data[index];
@@ -91,6 +105,7 @@ namespace mc {
 
         [[maybe_unused]] reference at(std::size_t index) const {
             if (index >= m_sz) {
+                // Index is out of bounds
                 return nullptr;
             }
 
@@ -116,20 +131,19 @@ namespace mc {
             m_sz = 0;
         }
 
-        [[maybe_unused]] vector& erase(std::size_t index) {
+        [[maybe_unused]] void erase(std::size_t index) {
             if (index >= m_sz) {
-                // Index is out of bounds, return empty vector
-                std::cout << "ERROR: index passed to vector.erase() out of bounds \n";
-                return *this;
+                // Index is out of bounds
+                return;
             }
 
             // Shift all data back
+//            std::copy(*m_data[index], end(), *m_data[index - 1]);
+
             for (std::size_t i = index; i < m_sz - 1; i++)
                 m_data[i] = m_data[i+1];
 
             m_sz--;
-
-            return *this;
         }
 
         // Debug print function
@@ -151,7 +165,7 @@ namespace mc {
             // the call to std::cout << ...
         }
 
-        [[maybe_unused]] vector& sort() {
+        [[maybe_unused]] void sort() {
             /*
              * This function will fail if typename T has no operator > function
              */
@@ -159,8 +173,6 @@ namespace mc {
             std::sort(begin(), end(), [](reference a, reference b){
                 return a > b;
             });
-
-            return *this;
         }
 
         T* begin() {

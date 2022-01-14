@@ -21,6 +21,10 @@ int main() {
     values.push_back(mc::pair<std::string, uint64_t>{"Hi", 1});
     std::cout << values << "\n";
 
+    mc::vector<int> test{1, 2, 3, 4};
+
+    test.insert(0, 0);
+
     return 0;
 
     mc::pair pairOfVectorInt{std::vector<std::string>{"hallo"}, 1};
@@ -74,7 +78,8 @@ int main() {
     set.push_back(mc::pair<std::string, int>{"Two", 2});
 
     // Delete the second pair out of our vector
-    std::cout << set.erase(1) << std::endl;
+    set.erase(1);
+    std::cout << set << std::endl;
 
     // Fill an array with random numbers and sort them
     mc::vector<uint32_t> unsorted;
@@ -98,9 +103,6 @@ int main() {
 
     auto finish = std::chrono::high_resolution_clock::now();
     std::cout << "Sorted " << unsorted.size() << " elements in " << std::chrono::duration_cast<std::chrono::milliseconds>(finish-start).count() << " ms\n";
-
-    // Uncomment this for wall of text
-//    unsorted.print();
 
     return 0;
 }
