@@ -118,3 +118,79 @@ All of these functions refer back to the `_Vector_base` struct, as can be seen i
       { return size_type(this->_M_impl._M_end_of_storage
 			 - this->_M_impl._M_start); }
 ```
+
+In our own implementation of the `vector` header, we will get rid of this `_Vector_base` subclass and focus on simplicity to help you understand how `vector` works at its base.
+
+
+###`std::map`
+
+At its base, `std::map` looks like this:
+
+```c
+  template <typename _Key, typename _Tp, typename _Compare = std::less<_Key>,
+	    typename _Alloc = std::allocator<std::pair<const _Key, _Tp> > >
+    class map
+    {
+    public:
+      typedef _Key					key_type;
+      typedef _Tp					mapped_type;
+      typedef std::pair<const _Key, _Tp>		value_type;
+      typedef _Compare					key_compare;
+      typedef _Alloc					allocator_type;
+
+    public:
+      class value_compare
+      : public std::binary_function<value_type, value_type, bool>
+      {
+	friend class map<_Key, _Tp, _Compare, _Alloc>;
+      protected:
+	_Compare comp;
+
+	value_compare(_Compare __c)
+	: comp(__c) { }
+
+      public:
+	bool operator()(const value_type& __x, const value_type& __y) const
+	{ return comp(__x.first, __y.first); }
+      };
+
+    private:
+      /// This turns a red-black tree into a [multi]map.
+      typedef typename __gnu_cxx::__alloc_traits<_Alloc>::template
+	rebind<value_type>::other _Pair_alloc_type;
+
+      typedef _Rb_tree<key_type, value_type, _Select1st<value_type>,
+		       key_compare, _Pair_alloc_type> _Rep_type;
+
+      /// The actual tree structure.
+      _Rep_type _M_t;
+      
+    public:
+      //A lot of constructors and functions
+```
+
+We can see that `_M_t` is the main member variable of type `_Rep_type`, which is a Red-Black tree made up of `std::pair` nodes.
+A Red-Black tree is used in `std::map` because it is a fast type of container that is easy to maintain and to keep sorted.
+
+A place where this is very clearly visible, is in the `begin()` function of `std::map`:
+
+```c
+//stl_map.h:
+    iterator
+    begin() _GLIBCXX_NOEXCEPT
+    { return _M_t.begin(); }
+      
+//stl_tree.h:
+    iterator
+    begin() _GLIBCXX_NOEXCEPT
+    { return iterator(this->_M_impl._M_header._M_left); }
+```
+
+Here we can see the first `begin()` function of `std::map` that has to return an iterator to the first element. 
+Because the data is stored in a Red-Black tree, the left-most element of this tree has to be returned. 
+This is what the second `begin()` function is for. It returns an iterator to the left-most element of the tree.
+
+In our simplified version of the `std::map` we will use a vector instead of a Red-Black tree. 
+This way we can make use of our own `mc::vector` and `mc::pair` classes to create the `mc::map`.
+
+##The MC library
