@@ -108,6 +108,13 @@ These are pointers of type `__gnu_cxx::__alloc_traits<_Tp_alloc_type>::pointer`,
 The use of this base struct is quite confusing if you are trying to quickly look into the header to gain some understanding of the logic behind `std::vector`.
 
 Because the data is stored in this `_Vector_base` struct, the class `vector` serves as a wrapper expanding on the functionality of the `_Vector_base` struct.
-the `vector` class adds functions like a bunch of constructors, `begin()` and `end()` functions, as well as
+the `vector` class adds functions like a bunch of constructors, `begin()` and `end()` functions, as well as some data-altering functions such as `insert()`, `erase()`, `push_back()` and `pop_back()`.
 
-All of these functions refer back to the `_Vector_base` struct
+All of these functions refer back to the `_Vector_base` struct, as can be seen in the `capacity()` function below:
+
+```c
+      size_type
+      capacity() const _GLIBCXX_NOEXCEPT
+      { return size_type(this->_M_impl._M_end_of_storage
+			 - this->_M_impl._M_start); }
+```
