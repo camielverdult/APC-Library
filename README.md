@@ -78,3 +78,36 @@ We will guide you through implementing your own simplified version of `std::pair
 But first we will look into `std::vector` and `std::map`.
 
 ###`std::vector`
+
+Secondly, we will be looking at `std::vector`. One could say `std::vector` is just a glorified array, which is true to some extent.
+`std::vector` makes use of a base struct `_Vector_base` which looks like this:
+```c
+  template<typename _Tp, typename _Alloc>
+    struct _Vector_base
+    {
+      typedef typename __gnu_cxx::__alloc_traits<_Alloc>::template
+	rebind<_Tp>::other _Tp_alloc_type;
+      typedef typename __gnu_cxx::__alloc_traits<_Tp_alloc_type>::pointer
+       	pointer;
+
+      struct _Vector_impl_data
+      {
+      pointer _M_start;
+      pointer _M_finish;
+      pointer _M_end_of_storage;
+      
+      //some functions (bases for copy & swap)
+      };
+      
+      //some functions (bases for std::vector functions)
+    }
+```
+
+In this base struct, `_M_start`, `_M_finish` and `_M_end_of_storage` are defined. 
+These are pointers of type `__gnu_cxx::__alloc_traits<_Tp_alloc_type>::pointer`, which can be seen as simple pointers to the first and last element in the array, and to the end of the storage, which can be seen as `_M_start` + `capacity`.
+The use of this base struct is quite confusing if you are trying to quickly look into the header to gain some understanding of the logic behind `std::vector`.
+
+Because the data is stored in this `_Vector_base` struct, the class `vector` serves as a wrapper expanding on the functionality of the `_Vector_base` struct.
+the `vector` class adds functions like a bunch of constructors, `begin()` and `end()` functions, as well as
+
+All of these functions refer back to the `_Vector_base` struct
