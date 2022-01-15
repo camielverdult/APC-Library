@@ -34,7 +34,7 @@ namespace mc {
         map(const map &other) : m_vector {other.raw()} {}
 
         // initializer list constructor
-        map(std::initializer_list<pair_template> list) : map() {
+        explicit map(std::initializer_list<pair_template> list) : map() {
             for (auto& entry : list) {
                 push_back(entry);
             }
