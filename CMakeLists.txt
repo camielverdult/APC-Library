@@ -17,7 +17,7 @@ add_executable(
         standard/pair.h
         standard/vector.h
         standard/map.h
-)
+        "std headers/GNU_pair.h" "std headers/GNU_vector.h" "std headers/GNU_map.h")
 
 # How to add gtest to your CMakeLists.txt:
 # https://github.com/google/googletest/tree/main/googletest#incorporating-into-an-existing-cmake-project

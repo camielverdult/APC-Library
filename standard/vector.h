@@ -28,9 +28,9 @@ namespace mc {
 
         vector(): vector(DEFAULT_CAP) {};
 
-        vector(initializer_list<T>) : vector() {
-
-        };
+//        vector(initializer_list<T>) : vector() {
+//
+//        };
 
         // Copy constructor
         vector(const vector& other): m_data{ new T[other.capacity()]},
