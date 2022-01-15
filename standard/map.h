@@ -82,7 +82,7 @@ namespace mc {
             m_vector.erase();
         }
 
-        [[maybe_unused]] mc::pair<TKey, TValue> &&erase(std::size_t index) {
+        [[maybe_unused]] mc::pair<TKey, TValue> &erase(std::size_t index) {
             return m_vector.erase(index);
         }
 

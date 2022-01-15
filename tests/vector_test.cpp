@@ -68,7 +68,12 @@ TEST(vector, insert) {
     // Initialise empty vector
     mc::vector<int> int_vector{10};
 
-    std::iota(int_vector.begin(), int_vector.end(), 0);
+    // std::iota(int_vector.begin(), int_vector.end(), 0);
+    // This won't work, because our m_sz variable will not be updated
+
+    for (std::size_t i = 0; i < 10; i++) {
+        int_vector.push_back(i);
+    }
 
     int_vector.insert(4, 2);
 

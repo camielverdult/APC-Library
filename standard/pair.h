@@ -110,9 +110,9 @@ namespace mc {
     }
 
     template <typename T1, typename T2>
-    [[maybe_unused]] pair<T1, T2>& make_pair(T1 first, T2 second) {
+    [[maybe_unused]] pair<T1, T2> make_pair(T1 first, T2 second) {
         return pair{first, second};
     }
-};
+}
 
 #endif //APC_LIBRARY_PAIR_H
