@@ -7,52 +7,71 @@ The C++ standard library takes away the need to set these containers up yourself
 
 Where this is good on one hand, the fact that these container types are given to us ready to be used can cause you to make mistakes in implementing the containers, as you might not fully understand the basics behind them.
 
-To fix this potential lack of knowledge, we will dive into `std::vector` and `std::pair` of the C++ standard library.
-We will first look into how these containers are implemented in the standard library, after which we will implement our own (basic) version of the containers.
+To help you to better understand these container types, we will dive into `std::pair`, `std::vector` and `std::map` of the C++ standard library.
+We will be looking at the [GNU ISO C++ Library](https://gcc.gnu.org/onlinedocs/libstdc++/) specifically.
+We will first look into how these containers are implemented in the GNU ISO library, after which we will implement our own (basic) version of the containers.
 
-##`std::pair`
-
-
-[cppreference](https://en.cppreference.com/w/cpp/utility/pair) describes `std::pair` as follows:
-
-![img.png](Imgs/cppreference_pair.png)
+##The GNU ISO C++ Library
+###`std::pair`
 
 `std::pair` is a special type of `std::tuple`. Where std::tuple doesn't have a fixed number of member variables, `std::pair` only ever has two.
 
-As a C++ class this would look like:
+The GNU ISO C++ library states the basis of `std::pair` as follows:
 
 ```c
-template <typename T1, typename T2>
-class pair{
-    T1 m_first;
-    T2 m_second;
-};
-```
-Where `m_first` and `m_second` are the pair's private member variables of types `T1` and `T2`.
-
-This template shows a simple struct that holds two class variables `T1` and `T2`. `std::pair` has several basic member functions, such as a few constructors among which:
-```c
-template <typename T1, typename T2>
-
-constexpr pair<T1, T2>();
-pair( const T1& x, const T2& y );
-pair( const pair& p ) = default;
-```
-These are the two default constructors and a copy constructor. The first constructor initializes an empty pair of types T1 and T2, whereas the second constructor takes two types and sets the values of m_first and m_second to these passed variables.
-The third constructor takes an existing pair and copies its m_first and m_second values into its own.
-
-std::pair doesn't need a generic get function, as it only ever has two member variables. Instead, it has the functions `first()` and `second()`.
-An implementation of these functions looks as follows:
-
-```c
-template <typename T1, typename T2>
-    T1 first(){
-        return m_first;
-    }
+  template<typename _T1, typename _T2>
+    struct pair
+    : private __pair_base<_T1, _T2>
+    {
+        typedef _T1 first_type;    ///< The type of the `first` member
+        typedef _T2 second_type;   ///< The type of the `second` member
     
-    T2 second(){
-        return m_second;
+        _T1 first;                 ///< The first member
+        _T2 second;                ///< The second member
+        
+    public:
+        //Many member functions
+    };
+```
+Here, `first` and `second` are the pair's private member variables of types `_T1` and `_T2`. This part of the pair class is still fairly straight forward.
+
+The template shows a struct that holds two variables of types `_T1` and `_T2`. `std::pair` has several basic member functions, such as a number of constructors among which:
+```c
+#if __cplusplus >= 201103L
+        constexpr pair(const pair&) = default;	///< Copy constructor
+        constexpr pair(pair&&) = default;		///< Move constructor
+
+        // DR 811.
+        template<typename _U1, typename
+        enable_if<_PCCP::template
+        _MoveCopyPair<true, _U1, _T2>(),
+                bool>::type=true>
+        constexpr pair(_U1&& __x, const _T2& __y)
+                : first(std::forward<_U1>(__x)), second(__y) { }
+```
+These are a move and copy constructor which take a different pair and construct a pair copying or moving the `first` and `second` of the passed pair. 
+There is also a template for a constructor that takes two values and sets up the pair with these two values. 
+Where the move and copy constructor are pretty readable, the third constructor has a lot more generic template-shenanigans going on. 
+These are necessary to make a universal library that works with all systems, but it may cause a user who wants to take a quick look into the library to understand what is going on to be overwhelmed, and preventing them from properly understanding what is actually going on.
+
+`std::pair` doesn't need any get functions, as the member variables `first` and `second` are public.
+
+Lastly `std::pair` has several swap functions, one of which looks as follows:
+
+```c
+    /// Swap the first members and then the second members.
+    _GLIBCXX20_CONSTEXPR void
+    swap(pair& __p)
+    noexcept(__and_<__is_nothrow_swappable<_T1>,
+            __is_nothrow_swappable<_T2>>::value)
+    {
+        using std::swap;
+        swap(first, __p.first);
+        swap(second, __p.second);
     }
 ```
 
-These functions speak for themselves as they simply return one member variable of type T1 or T2.
+As we can see in this example, `std::pair::swap()` makes use of `std::swap()` to swap the member variables of one pair with those of a second pair.
+There is a `noexcept()` with some generic statements that may, again, be hard for a novice to understand.
+
+We will guide you through implementing your own simplified version of `std::pair` later on 

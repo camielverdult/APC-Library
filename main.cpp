@@ -105,4 +105,8 @@ int main() {
     std::cout << "Sorted " << unsorted.size() << " elements in " << std::chrono::duration_cast<std::chrono::milliseconds>(finish-start).count() << " ms\n";
 
     return 0;
+
+    std::pair<int,int> a{1,2};
+
+    auto s = a.first;
 }
