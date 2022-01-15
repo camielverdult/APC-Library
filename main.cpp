@@ -104,21 +104,6 @@ int main() {
 //
 //    return 0;
 
-    std::pair<int,std::string> a{1,"hans"};
-    std::pair<int,std::string> b{2,"peter"};
-    std::pair<int,std::string> c{3,"karel"};
-    std::pair<int,std::string> d{4,"piet"};
-    std::pair<int,std::string> e{5,"jan"};
-
-    std::vector<std::pair<int,std::string>> guys{a,b,e,d,c};
-
-    std::cout << guys[0].second << ", " << guys[1].second << ", " << guys[2].second << ", " << guys[3].second << ", " << guys[4].second << std::endl;
-
-    std::sort(guys.begin(), guys.end(), [&](auto a, auto b){
-        return a < b;
-    });
-
-    std::cout << guys[0].second << ", " << guys[1].second << ", " << guys[2].second << ", " << guys[3].second << ", " << guys[4].second << std::endl;
 
     return 0;
 }
