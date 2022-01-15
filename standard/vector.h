@@ -6,6 +6,7 @@
 #define APC_LIBRARY_VECTOR_H
 
 #include <algorithm>
+#include <initializer_list>
 
 #define DEFAULT_CAP 20
 
@@ -21,16 +22,18 @@ namespace mc {
         using reference = T&;
         using const_reference = const T&;
 
-        vector(std::size_t capacity):
+        explicit vector(std::size_t capacity):
                 m_data{ new T[capacity]},
                 m_cap{ capacity },
                 m_sz{ 0 } {}
 
         vector(): vector(DEFAULT_CAP) {};
 
-//        vector(initializer_list<T>) : vector() {
-//
-//        };
+        explicit vector(std::initializer_list<T> list) : vector(DEFAULT_CAP) {
+            for (auto& entry : list) {
+                push_back(entry);
+            }
+        };
 
         // Copy constructor
         vector(const vector& other): m_data{ new T[other.capacity()]},
@@ -41,32 +44,59 @@ namespace mc {
             delete[] m_data;
         }
 
-        [[maybe_unused]] std::size_t capacity() {
+        [[maybe_unused]] [[nodiscard]] std::size_t capacity() const noexcept {
             return m_cap;
         }
 
-        [[maybe_unused]] std::size_t size() {
+        [[maybe_unused]] [[nodiscard]] std::size_t size() const noexcept {
             return m_sz;
         }
 
-        [[maybe_unused]] [[nodiscard]] std::size_t capacity() const {
-            return m_cap;
-        }
+        bool operator==(const vector& other) {
+            // Find the lowest index to avoid out of bounds
+            if (other.size() != m_sz) {
+                return false;
+            }
 
-        [[maybe_unused]] [[nodiscard]] std::size_t size() const {
-            return m_sz;
+            for (std::size_t i = 0; i < m_sz; i++) {
+                // We know that other.size() and m_sz are the same because of the above check
+                if (other.raw()[i] != m_data[i])
+                    // Return false if element[i] for both is not identical
+                    return false;
+            }
+
+            // Return if the capacity is the same for both
+            return m_cap == other.capacity();
         }
 
         // Copy assignment operator
-        [[maybe_unused]] vector& operator=(vector other) {
-            std::copy(other.raw(), m_data);
+        [[maybe_unused]] vector& operator=(const vector& other) {
+
+            // Cppcheck: (warning) operatorEqToSelf: 'operator=' should check for assignment to self to avoid problems with dynamic memory.
+            if (other == *this) {
+                return *this;
+            }
+
+            if (other.size() > m_cap) {
+                // We need to delete our previous array because it is too
+                // small to fit the other.raw() data and create a new array
+                // which will fit the other capacity just fine
+
+                delete[] m_data;
+                m_data = new T[other.capacity()];
+
+            }
+
+            // copy over data from other
+            std::copy(other.begin(), other.end(), m_data);
+
             m_cap = other.capacity();
             m_sz = other.size();
 
             return *this;
         }
 
-        [[maybe_unused]] T* raw() {
+        [[maybe_unused]] T* raw() const noexcept {
             return m_data;
         }
 
@@ -76,16 +106,15 @@ namespace mc {
         }
 
         [[maybe_unused]] void insert(const std::size_t index, const value_type entry) {
-            if (m_sz == 0) {
+            if (m_sz == 0 or index >= m_sz) {
                 push_back(entry);
-                return;
-            } else if (index >= m_sz) {
-                // Index is out of bounds
                 return;
             }
 
             _adjust_cap();
 
+            // std::copy will not work here for some reason?
+            // error: invalid type argument of unary '*' (have 'int')
 //            std::copy(*m_data[index], end(), *m_data[index + 1]);
             for (size_t i = m_sz; i > index; i--) {
                 m_data[i + 1] = m_data[i];
@@ -112,7 +141,7 @@ namespace mc {
             return m_data[index];
         }
 
-        [[maybe_unused]] void pop_back() {
+        [[maybe_unused]] void pop_back() noexcept {
             --m_sz;
         }
 
@@ -175,11 +204,11 @@ namespace mc {
             });
         }
 
-        T* begin() {
+        T* begin() const noexcept {
             return m_data;
         }
 
-        T* end() {
+        T* end() const noexcept {
             // This will point to the last element in our vector
             // To be used in std algorithm functions
             return &m_data[m_cap];

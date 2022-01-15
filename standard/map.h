@@ -33,6 +33,13 @@ namespace mc {
         // Copy constructor
         map(const map &other) : m_vector {other.raw()} {}
 
+        // initializer list constructor
+        map(std::initializer_list<pair_template> list) : map() {
+            for (auto& entry : list) {
+                push_back(entry);
+            }
+        };
+
         [[maybe_unused]] std::size_t capacity() {
             /* This function returns the capacity of the underlying vector */
             return m_vector.capacity();
