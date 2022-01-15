@@ -16,7 +16,7 @@ TEST(vector, creation) {
 
 TEST(vector, int_array_compare) {
     // Initialise empty vector
-    mc::vector<int> int_vector{1000};
+    mc::vector<int> int_vector(1000);
 
     std::iota(int_vector.begin(), int_vector.end(), 0);
 
@@ -61,23 +61,28 @@ TEST(vector, sort) {
     int_vector.sort();
 
     // Make sure the sorted arrays match
-    ASSERT_EQ(*int_vector.raw(), *numbers) << "mc::vector sort failed:";
+    ASSERT_EQ(*int_vector.raw(), *numbers) << "mc::vector sort failed!";
 }
 
 TEST(vector, insert) {
     // Initialise empty vector
-    mc::vector<int> int_vector{10};
-
-    // std::iota(int_vector.begin(), int_vector.end(), 0);
-    // This won't work, because our m_sz variable will not be updated
-
-    for (std::size_t i = 0; i < 10; i++) {
-        int_vector.push_back(i);
-    }
+    mc::vector<int> int_vector{1, 2, 3, 4, 5, 6, 7, 8, 9};
 
     int_vector.insert(4, 2);
 
-    int check[] {1, 2, 3, 4, 2, 5, 6, 7, 8, 9};
+    mc::vector<int> verify_vector{1, 2, 3, 4, 2, 5, 6, 7, 8, 9};
 
-    ASSERT_EQ(*int_vector.raw(), *check) << "Insert does not insert at the right place!";
+    ASSERT_EQ(int_vector, verify_vector) << "Insert does not insert properly!";
+}
+
+TEST(vector, operator_is) {
+    mc::vector<int> test{1, 2, 3, 4, 5};
+    test.insert(2, 2);
+
+    mc::vector<int> copy{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,24, 25, 26};
+
+    // Test copy operator
+    test = copy;
+
+    ASSERT_EQ(test, copy) << "operator= does not work!";
 }

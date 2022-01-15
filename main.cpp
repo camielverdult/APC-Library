@@ -14,15 +14,6 @@ int main() {
      * Please take a look at the header for all functions, some are not used here
      */
 
-    mc::vector<int> test{1, 2, 3, 4, 5};
-    test.insert(2, 2);
-
-    mc::vector<int> copy{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,24, 25, 26};
-
-    test = copy;
-
-    std::cout << test << "\n";
-
 //    mc::map<std::string, uint64_t> values;
 //
 //    values.push_back(mc::pair<std::string, uint64_t>{"Hi", 1});

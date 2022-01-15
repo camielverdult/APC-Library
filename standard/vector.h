@@ -52,23 +52,6 @@ namespace mc {
             return m_sz;
         }
 
-        bool operator==(const vector& other) {
-            // Find the lowest index to avoid out of bounds
-            if (other.size() != m_sz) {
-                return false;
-            }
-
-            for (std::size_t i = 0; i < m_sz; i++) {
-                // We know that other.size() and m_sz are the same because of the above check
-                if (other.raw()[i] != m_data[i])
-                    // Return false if element[i] for both is not identical
-                    return false;
-            }
-
-            // Return if the capacity is the same for both
-            return m_cap == other.capacity();
-        }
-
         // Copy assignment operator
         [[maybe_unused]] vector& operator=(const vector& other) {
 
@@ -100,7 +83,7 @@ namespace mc {
             return m_data;
         }
 
-        [[maybe_unused]] void push_back(value_type entry) {
+        [[maybe_unused]] void push_back(value_type entry) noexcept {
             _adjust_cap();
             m_data[m_sz++] = entry;
         }
@@ -115,18 +98,19 @@ namespace mc {
 
             // std::copy will not work here for some reason?
             // error: invalid type argument of unary '*' (have 'int')
-//            std::copy(*m_data[index], end(), *m_data[index + 1]);
-            for (size_t i = m_sz; i > index; i--) {
+            for (size_t i = m_sz; i >= index; i--) {
                 m_data[i + 1] = m_data[i];
             }
 
-            m_data[m_sz++] = entry;
+            m_data[index] = entry;
+            m_sz++;
         }
 
         [[maybe_unused]] reference at(std::size_t index) {
             if (index >= m_sz) {
                 // Index is out of bounds
-                return nullptr;
+                std::cout << "vector_error: at(i) is out of bounds" << "\n";
+                return m_data[0];
             }
 
             return m_data[index];
@@ -135,7 +119,8 @@ namespace mc {
         [[maybe_unused]] reference at(std::size_t index) const {
             if (index >= m_sz) {
                 // Index is out of bounds
-                return nullptr;
+                std::cout << "vector_error: at(i) is out of bounds" << "\n";
+                return m_data[0];
             }
 
             return m_data[index];
@@ -183,17 +168,6 @@ namespace mc {
             // the call to std::cout << ...
         }
 
-        // Print function
-        void print(std::ostream& stream = std::cout) {
-            for (std::size_t i = 0; i < m_sz; i++) {
-                stream << m_data[i];
-                if (i != m_sz - 1)
-                    stream << " ";
-            }
-            // We don't add a newline or std::endl because we might already do that in
-            // the call to std::cout << ...
-        }
-
         [[maybe_unused]] void sort() {
             /*
              * This function will fail if typename T has no operator > function
@@ -233,8 +207,35 @@ namespace mc {
     // Out stream operator for pair
     template <typename T>
     std::ostream& operator<<(std::ostream& stream, vector<T>& other) {
-        other.print();
+        stream << "[";
+        for (std::size_t i = 0; i < other.size(); i++) {
+            stream << other[i];
+            // Add ' ' between every element except the last
+            if (i != other.size() - 1)
+                stream << ", ";
+        }
+
+        stream << "]";
+
         return stream;
+    }
+
+    template <typename T>
+    bool operator==(const vector<T>& a, const vector<T>& b) {
+        // Find the lowest index to avoid out of bounds
+        if (a.size() != b.size()) {
+            return false;
+        }
+
+        for (std::size_t i = 0; i < a.size(); i++) {
+            // We know that other.size() and m_sz are the same because of the above check
+            if (a[i] != b[i])
+                // Return false if element[i] for both is not identical
+                return false;
+        }
+
+        // Return if the capacity is the same for both
+        return a.capacity() == b.capacity();
     }
 
 }

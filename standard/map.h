@@ -25,13 +25,14 @@ namespace mc {
         using second_const_reference = const TValue&;
 
         using pair_template = mc::pair<TKey, TValue>;
+        using pair_template_pointer = pair_template*;
+        using pair_template_reference = pair_template&;
+        using pair_template_const_reference = const pair_template&;
+
         using vector_template = mc::vector<pair_template>;
 
         // Default constructor
         [[maybe_unused]] explicit map() : m_vector {} {}
-
-        // Copy constructor
-        map(const map &other) : m_vector {other.raw()} {}
 
         // initializer list constructor
         explicit map(std::initializer_list<pair_template> list) : map() {
@@ -39,6 +40,10 @@ namespace mc {
                 push_back(entry);
             }
         };
+
+        // Copy constructor
+        map(const map &other) : m_vector {other.raw()} {}
+
 
         [[maybe_unused]] std::size_t capacity() {
             /* This function returns the capacity of the underlying vector */
@@ -65,23 +70,35 @@ namespace mc {
             return m_vector.raw();
         }
 
-        [[maybe_unused]] void push_back(pair_template entry) {
+        // Push back function for manual mc::pair<T1, T2>
+        [[maybe_unused]] void push_back(const pair_template entry) {
             m_vector.push_back(entry);
         }
 
-        [[maybe_unused]] void insert(pair_template entry) {
-            m_vector.insert(entry);
+        // Push back function for pushing back values
+        [[maybe_unused]] void push_back(const first_type first, const second_type second) {
+            m_vector.push_back(pair_template(first, second));
+        }
+
+        // Insert function for manual mc::pair<T1, T2>
+        [[maybe_unused]] void insert(const std::size_t index, const pair_template entry) {
+            m_vector.insert(index, entry);
+        }
+
+        // Insert function for pushing back values
+        [[maybe_unused]] void insert(const std::size_t index, const first_type first, const second_type second) {
+            m_vector.insert(index, pair_template(first, second));
         }
 
         [[maybe_unused]] void pop_back() {
             m_vector.pop_back();
         }
 
-        [[maybe_unused]] mc::pair<TKey, TValue> &at(std::size_t index) {
+        [[maybe_unused]] pair_template_reference at(std::size_t index) {
             return m_vector.at(index);
         }
 
-        [[maybe_unused]] mc::pair<TKey, TValue> &at(std::size_t index) const {
+        [[maybe_unused]] pair_template_reference at(std::size_t index) const {
             return m_vector.at(index);
         }
 
@@ -89,7 +106,7 @@ namespace mc {
             m_vector.erase();
         }
 
-        [[maybe_unused]] mc::pair<TKey, TValue> &erase(std::size_t index) {
+        [[maybe_unused]] pair_template_reference erase(std::size_t index) {
             return m_vector.erase(index);
         }
 
@@ -103,7 +120,7 @@ namespace mc {
             m_vector.print(stream);
         }
 
-        [[maybe_unused]] vector_template& sort() {
+        [[maybe_unused]] void sort() {
             /*
              * This function will fail if typename T has no operator > function
              */
@@ -120,17 +137,17 @@ namespace mc {
         }
 
         // Copy assignment operator
-        [[maybe_unused]] map &operator=(map other) {
-            // The operator= from vector should handle this
+        [[maybe_unused]] map& operator=(map other) {
+            // The operator= from mc::vector should handle this
             m_vector = other;
             return *this;
         }
 
-        [[maybe_unused]] mc::pair <TKey, TValue> &operator[](std::size_t index) {
+        [[maybe_unused]] pair_template_reference operator[](std::size_t index) {
             return m_vector[index];
         }
 
-        [[maybe_unused]] const mc::pair<TKey, TValue> &operator[](std::size_t index) const {
+        [[maybe_unused]] pair_template_const_reference operator[](std::size_t index) const {
             return m_vector[index];
         }
 
@@ -143,6 +160,24 @@ namespace mc {
     std::ostream& operator<<(std::ostream& stream, map<TKey, TValue>& other) {
         other.print(stream);
         return stream;
+    }
+
+    template<typename TKey, typename TValue>
+    bool operator==(const map<TKey, TValue>& a, const map<TKey, TValue>& b) {
+        // Find the lowest index to avoid out of bounds
+        if (a.size() != b.size()) {
+            return false;
+        }
+
+        for (std::size_t i = 0; i < a.size(); i++) {
+            // We know that other.size() and m_sz are the same because of the above check
+            if (a[i] != b[i])
+                // Return false if element[i] for both is not identical
+                return false;
+        }
+
+        // Return if the capacity is the same for both
+        return a.capacity() == b.capacity();
     }
 
 }
