@@ -79,7 +79,7 @@ namespace mc {
             return *this;
         }
 
-        [[maybe_unused]] T* raw() const noexcept {
+        [[maybe_unused]] pointer raw() const noexcept {
             return m_data;
         }
 

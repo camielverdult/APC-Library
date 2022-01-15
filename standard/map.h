@@ -7,6 +7,8 @@
 
 #include "pair.h"
 #include "vector.h"
+#include <initializer_list>
+
 
 namespace mc {
 
@@ -30,6 +32,9 @@ namespace mc {
         using pair_template_const_reference = const pair_template&;
 
         using vector_template = mc::vector<pair_template>;
+        using vector_template_pointer = vector_template*;
+        using vector_template_reference = vector_template&;
+        using vector_template_const_reference = const vector_template&;
 
         // Default constructor
         [[maybe_unused]] explicit map() : m_vector {} {}
@@ -65,9 +70,9 @@ namespace mc {
             return m_vector.size();
         }
 
-        [[maybe_unused]] std::pair<TKey, TValue>* raw() {
+        [[maybe_unused]] vector_template_reference raw() {
             /* This function returns the raw pointer of the underlying vector */
-            return m_vector.raw();
+            return m_vector;
         }
 
         // Push back function for manual mc::pair<T1, T2>
@@ -137,7 +142,7 @@ namespace mc {
         }
 
         // Copy assignment operator
-        [[maybe_unused]] map& operator=(map other) {
+        [[maybe_unused]] map& operator=(const map other) {
             // The operator= from mc::vector should handle this
             m_vector = other;
             return *this;

@@ -68,24 +68,64 @@ TEST(map, sort) {
 }
 
 TEST(map, insert) {
-    // Initialise empty vector
-    mc::vector<int> int_vector{1, 2, 3, 4, 5, 6, 7, 8, 9};
+    // Initialise empty map
+    mc::map<std::size_t, std::string> hash_map{
+        {1, "test1"},
+        {2, "test2"},
+        {3, "test3"},
+        {4, "test4"},
+        {5, "test5"},
+        {6, "test6"},
+        {7, "test7"},
+        {8, "test8"},
+        {9, "test9"},
+        {10, "test10"}
+    };
 
-    int_vector.insert(4, 2);
+    hash_map.insert(4, 2, "test2");
 
-    mc::vector<int> verify_vector{1, 2, 3, 4, 2, 5, 6, 7, 8, 9};
+    mc::vector<int> verify_vector{1, 2, 3, 4, 2, 5, 6, 7, 8, 9, 10};
 
-    ASSERT_EQ(int_vector, verify_vector) << "Insert does not insert properly!";
+    for (std::size_t i = 0; i < 10; i++) {
+        ASSERT_EQ(hash_map[i].first(), i) << "mc::map insert failed!";
+        if (hash_map[i].first() != i) {
+            break;
+        }
+    }
 }
 
 TEST(map, operator_is) {
-    mc::vector<int> test{1, 2, 3, 4, 5};
-    test.insert(2, 2);
+    mc::map<std::size_t, std::string> smol{
+            {1, "test1"},
+            {2, "test2"},
+            {3, "test3"}
+    };
 
-    mc::vector<int> copy{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,24, 25, 26};
+    mc::map<std::size_t, std::string> copy{
+            {1, "test1"},
+            {2, "test2"},
+            {3, "test3"},
+            {4, "test4"},
+            {5, "test5"},
+            {6, "test6"},
+            {7, "test7"},
+            {8, "test8"},
+            {9, "test9"},
+            {10, "test10"},
+            {1, "test1"},
+            {2, "test2"},
+            {3, "test3"},
+            {4, "test4"},
+            {5, "test5"},
+            {6, "test6"},
+            {7, "test7"},
+            {8, "test8"},
+            {9, "test9"},
+            {10, "test10"}
+    };
 
     // Test copy operator
-    test = copy;
+    smol = copy;
 
-    ASSERT_EQ(test, copy) << "operator= does not work!";
+    ASSERT_EQ(smol, copy) << "operator= does not work!";
 }
