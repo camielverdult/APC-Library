@@ -14,7 +14,7 @@ We will first look into how these containers are implemented in the GNU ISO libr
 ##The GNU ISO C++ Library
 ###`std::pair`
 
-`std::pair` is a special type of `std::tuple`. Where std::tuple doesn't have a fixed number of member variables, `std::pair` only ever has two.
+`std::pair` is a special, simpler type of `std::tuple`. Where std::tuple doesn't have a fixed number of member variables, `std::pair` only ever has two.
 
 The GNU ISO C++ library states the basis of `std::pair` as follows:
 
@@ -74,4 +74,7 @@ Lastly `std::pair` has several swap functions, one of which looks as follows:
 As we can see in this example, `std::pair::swap()` makes use of `std::swap()` to swap the member variables of one pair with those of a second pair.
 There is a `noexcept()` with some generic statements that may, again, be hard for a novice to understand.
 
-We will guide you through implementing your own simplified version of `std::pair` later on 
+We will guide you through implementing your own simplified version of `std::pair` later on.
+But first we will look into `std::vector` and `std::map`.
+
+###`std::vector`
