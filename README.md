@@ -243,3 +243,30 @@ pair(const pair& other):
     }
 ```
 
+With these constructors we can execute commands like the following:
+
+```c
+mc::pair<int, int> a{};     // sets m_first and m_second to nullptr
+a.m_first = 1;              // a == {1, nullptr}
+a.m_second = 2;             // a == {1, 2}
+
+mc::pair<int, std::string> b{1, "hello"};   // b == {1, "hello"}
+mc::pair<int, std::string> c{b};            // c == {1, "hello"}
+```
+
+We can manually print these values to the console to check if the constructors worked correctly
+
+```c
+std::cout << "a: {" << a.m_first << ", " << a.m_second << "}\n";
+std::cout << "b: {" << b.m_first << ", " << b.m_second << "}\n";
+std::cout << "c: {" << c.m_first << ", " << c.m_second << "}\n";
+```
+
+This generates the following output:
+```
+a: {1, 2}
+b: {1, hello}
+c: {1, hello}
+```
+
+That works splendidly!

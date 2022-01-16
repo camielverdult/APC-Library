@@ -105,10 +105,16 @@ int main() {
 //    return 0;
 
 
-    mc::pair<int,int> ab{3,2};
-    mc::pair<int,int> ac{1,3};
+    mc::pair<int, int> a{};     // sets m_first and m_second to nullptr
+    a.m_first = 1;              // a == {1, nullptr}
+    a.m_second = 2;             // a == {1, 2}
 
-    std::cout << (ab > ac) << std::endl;
+    mc::pair<int, std::string> b{1, "hello"};   // b == {1, "hello"}
+    mc::pair<int, std::string> c{b};            // c == {1, "hello"}
+
+    std::cout << "a: {" << a.m_first << ", " << a.m_second << "}\n";
+    std::cout << "b: {" << b.m_first << ", " << b.m_second << "}\n";
+    std::cout << "c: {" << c.m_first << ", " << c.m_second << "}\n";
 
     return 0;
 }
