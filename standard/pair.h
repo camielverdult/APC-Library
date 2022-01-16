@@ -113,6 +113,11 @@ namespace mc {
     [[maybe_unused]] pair<T1, T2> make_pair(T1 first, T2 second) {
         return pair{first, second};
     }
+
+    template <typename T1, typename T2>
+    bool operator==(const pair<T1, T2>& a, const pair<T1, T2>& b) {
+        return (a.first() == b.first() and a.second() == b.second());
+    }
 }
 
 #endif //APC_LIBRARY_PAIR_H

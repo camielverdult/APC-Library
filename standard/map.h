@@ -70,17 +70,23 @@ namespace mc {
             return m_vector.size();
         }
 
-        [[maybe_unused]] vector_template_reference raw() {
-            /* This function returns the raw pointer of the underlying vector */
+        vector_template_reference raw() {
+            /* This function returns the underlying vector */
             return m_vector;
         }
+
+        vector_template_const_reference raw() const {
+            /* This function returns the underlying vector */
+            return m_vector;
+        }
+
 
         // Push back function for manual mc::pair<T1, T2>
         [[maybe_unused]] void push_back(const pair_template entry) {
             m_vector.push_back(entry);
         }
 
-        // Push back function for pushing back values
+        // Push back function for pushing back values of template types
         [[maybe_unused]] void push_back(const first_type first, const second_type second) {
             m_vector.push_back(pair_template(first, second));
         }
@@ -90,7 +96,7 @@ namespace mc {
             m_vector.insert(index, entry);
         }
 
-        // Insert function for pushing back values
+        // Insert function for inserting values of template types
         [[maybe_unused]] void insert(const std::size_t index, const first_type first, const second_type second) {
             m_vector.insert(index, pair_template(first, second));
         }
@@ -144,7 +150,7 @@ namespace mc {
         // Copy assignment operator
         [[maybe_unused]] map& operator=(const map other) {
             // The operator= from mc::vector should handle this
-            m_vector = other;
+            m_vector = other.raw();
             return *this;
         }
 
@@ -176,6 +182,7 @@ namespace mc {
 
         for (std::size_t i = 0; i < a.size(); i++) {
             // We know that other.size() and m_sz are the same because of the above check
+            // bool operator==(const pair<T1, T2>& a, const pair<T1, T2>& b) will handle the check below
             if (a[i] != b[i])
                 // Return false if element[i] for both is not identical
                 return false;

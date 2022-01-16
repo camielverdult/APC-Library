@@ -33,10 +33,10 @@ TEST(map, int_array_compare) {
 
 TEST(map, sort) {
     // Initialise empty vector
-    mc::map<std::size_t, std::string> hash_map;
+    mc::map<uint64_t, std::string> hash_map;
 
     // Initialise int array
-    int numbers[1000];
+    uint64_t numbers[1000];
 
     // Use mersenne twister to generate random numbers, see our previous topic
     // For more information about the working of the mersenne twister
@@ -48,7 +48,7 @@ TEST(map, sort) {
         // Generate random value (we don't want it to be huge)
         uint64_t random_value = mtw() / 100000;
 
-        hash_map.push_back(random_value, "test");
+        hash_map.push_back(random_value, "hello friend!");
         numbers[i] = random_value;
     }
 
@@ -60,8 +60,9 @@ TEST(map, sort) {
     hash_map.sort();
 
     for (std::size_t i = 0; i < 1000; i++) {
-        ASSERT_EQ(hash_map[i].first(), i) << "mc::map sort failed!";
-        if (hash_map[i].first() != i) {
+        uint64_t value = numbers[i];
+        ASSERT_EQ(hash_map[i].first(), value) << "mc::map sort failed!";
+        if (hash_map[i].first() != value) {
             break;
         }
     }
