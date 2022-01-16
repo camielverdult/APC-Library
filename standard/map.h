@@ -46,7 +46,9 @@ namespace mc {
             }
         };
 
-        // Copy constructor
+        // Copy constructor, this will call vector's copy constructor
+        // which will handle the rest
+
         map(const map &other) : m_vector {other.raw()} {}
 
 
