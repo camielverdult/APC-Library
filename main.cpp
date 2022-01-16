@@ -105,5 +105,10 @@ int main() {
 //    return 0;
 
 
+    mc::pair<int,int> ab{3,2};
+    mc::pair<int,int> ac{1,3};
+
+    std::cout << (ab > ac) << std::endl;
+
     return 0;
 }

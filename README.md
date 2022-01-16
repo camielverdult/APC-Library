@@ -139,19 +139,10 @@ At its base, `std::map` looks like this:
       typedef _Alloc					allocator_type;
 
     public:
-      class value_compare
+      class value_compare   
       : public std::binary_function<value_type, value_type, bool>
       {
-	friend class map<_Key, _Tp, _Compare, _Alloc>;
-      protected:
-	_Compare comp;
-
-	value_compare(_Compare __c)
-	: comp(__c) { }
-
-      public:
-	bool operator()(const value_type& __x, const value_type& __y) const
-	{ return comp(__x.first, __y.first); }
+        {...}      
       };
 
     private:
@@ -194,3 +185,61 @@ In our simplified version of the `std::map` we will use a vector instead of a Re
 This way we can make use of our own `mc::vector` and `mc::pair` classes to create the `mc::map`.
 
 ##The MC library
+
+To further illustrate, we will now implement the functionalities of `std::pair`, `std::vector` and `std::map` in simple C++ classes ourselves.
+This library will be the MC library, named after its creators.
+
+
+###`mc::pair`
+
+Starting off with `pair`, we will create a header file `pair.h` and create a base class in the `mc` namespace:
+
+```c
+namespace mc {
+
+    template <typename T1, typename T2>
+    class pair {
+        
+    public:
+        T1 m_first;
+        T2 m_second;
+    };
+    
+}
+```
+
+We declare a template with typenames `T1` and `T2` for the ability to handle any variable/container type.
+We declare two member variables `m_first` and `m_second` of type `T1` and `T2` respectively.
+These variables are public just like in the `std::pair` implementation.
+
+Now that we have a place for data to be stored, let's make some constructors that can actually get data in our pair.
+
+####Constructors
+
+Let's start the constructors off with the default and parameterized constructors:
+
+```c
+// Default constructor
+pair() = default;
+
+// Parameterized constructor
+pair(T1 first, T2 second) : 
+    m_first {first}, 
+    m_second {second}
+    {
+        //Nothing to do here
+    }
+```
+
+and a copy constructor:
+
+```c
+// Copy constructor
+pair(const pair& other):
+    m_first{other.m_first},
+    m_second{other.m_second}
+    {
+        //Nothing to do here
+    }
+```
+

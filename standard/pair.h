@@ -26,36 +26,36 @@ namespace mc {
         using second_reference = T2&;
         using second_const_reference = const T2&;
 
-        // Empty constructor
-        pair()= default;
-
         // Default constructor
+        pair() = default;
+
+        // Parameterized constructor
         pair(T1 first, T2 second): m_first {first}, m_second {second} {}
 
         // Copy constructor
-        pair(const pair& other): pair{other.first(), other.second()} {}
+        pair(const pair& other): m_first{other.m_first}, m_second{other.m_second} {}
 
         // Copy assignment operator
         pair& operator=(pair other) {
-            m_first = other.first();
-            m_second = other.second();
+            m_first = other.m_first;
+            m_second = other.m_second;
             return *this;
         }
 
         // > compare operator
-        bool operator>(pair other) {
-            if (m_first == other.first()) {
-                return m_second > other.second();
+        bool operator>(const pair<T1, T2>& other) const {
+            if (m_first == other.m_first) {
+                return m_second > other.m_second;
             }
-            return m_first > other.first();
+            return m_first > other.m_first;
         }
 
         // < compare operator
-        bool operator<(pair other) {
-            if (m_first == other.first()) {
-                return m_second < other.second();
+        bool operator<(const pair<T1, T2>& other) const {
+            if (m_first == other.m_first) {
+                return m_second < other.m_second;
             }
-            return m_first < other.first();
+            return m_first < other.m_first;
         }
 
         // Print function
@@ -66,25 +66,6 @@ namespace mc {
             // the call to std::cout << ...
         }
 
-        // Getter function for first
-        T1 first() {
-            return m_first;
-        }
-
-        // Getter function for second
-        T2 second() {
-            return m_second;
-        }
-
-        // const getter function for first
-        [[maybe_unused]] T1 first() const {
-            return m_first;
-        }
-
-        // const getter function for second
-        [[maybe_unused]] T2 second() const {
-            return m_second;
-        }
 
         // Function for swapping first and second
         // This only works if the T1 and T2 are of the same type
@@ -97,7 +78,6 @@ namespace mc {
             return sizeof(*this);
         }
 
-    private:
         T1 m_first;
         T2 m_second;
     };
