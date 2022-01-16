@@ -129,7 +129,5 @@ TEST(map, operator_is) {
     // Test copy operator
     smol = copy;
 
-    std::cout << "smol:\n" << smol << "\n" << "copy:\n" << copy << "\n";
-
     ASSERT_EQ(smol, copy) << "operator= does not work!";
 }
