@@ -192,7 +192,7 @@ This library will be the MC library, named after its creators.
 
 ###`mc::pair`
 
-Starting off with `pair`, we will create a header file `pair.h` and create a base class in the `mc` namespace:
+Starting off with `pair`, we will create a header file `pair.h` and create a basis for the `pair` class in the `mc` namespace:
 
 ```c
 namespace mc {
