@@ -75,11 +75,10 @@ namespace mc {
             return m_vector;
         }
 
-        vector_template_const_reference raw() const {
+        [[maybe_unused]] vector_template_const_reference raw() const {
             /* This function returns the underlying vector */
             return m_vector;
         }
-
 
         // Push back function for manual mc::pair<T1, T2>
         [[maybe_unused]] void push_back(const pair_template entry) {
@@ -126,11 +125,6 @@ namespace mc {
             m_vector.debug_print(stream);
         }
 
-        // Print function
-        [[maybe_unused]] void print(std::ostream& stream = std::cout) {
-            m_vector.print(stream);
-        }
-
         [[maybe_unused]] void sort() {
             /*
              * This function will fail if typename T has no operator > function
@@ -169,7 +163,7 @@ namespace mc {
     // Out stream operator for pair
     template<typename TKey, typename TValue>
     std::ostream& operator<<(std::ostream& stream, map<TKey, TValue>& other) {
-        other.print(stream);
+        stream << other.raw();
         return stream;
     }
 

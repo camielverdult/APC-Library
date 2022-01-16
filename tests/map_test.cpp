@@ -60,7 +60,7 @@ TEST(map, sort) {
     hash_map.sort();
 
     for (std::size_t i = 0; i < 1000; i++) {
-        uint64_t value = numbers[i];
+        auto value = numbers[i];
         ASSERT_EQ(hash_map[i].first(), value) << "mc::map sort failed!";
         if (hash_map[i].first() != value) {
             break;
@@ -70,7 +70,7 @@ TEST(map, sort) {
 
 TEST(map, insert) {
     // Initialise empty map
-    mc::map<std::size_t, std::string> hash_map{
+    mc::map<int, std::string> hash_map{
         {1, "test1"},
         {2, "test2"},
         {3, "test3"},
@@ -88,8 +88,9 @@ TEST(map, insert) {
     mc::vector<int> verify_vector{1, 2, 3, 4, 2, 5, 6, 7, 8, 9, 10};
 
     for (std::size_t i = 0; i < 10; i++) {
-        ASSERT_EQ(hash_map[i].first(), i) << "mc::map insert failed!";
-        if (hash_map[i].first() != i) {
+        auto value = verify_vector[i];
+        ASSERT_EQ(hash_map[i].first(), value) << "mc::map insert failed!";
+        if (hash_map[i].first() != value) {
             break;
         }
     }
@@ -127,6 +128,8 @@ TEST(map, operator_is) {
 
     // Test copy operator
     smol = copy;
+
+    std::cout << "smol:\n" << smol << "\n" << "copy:\n" << copy << "\n";
 
     ASSERT_EQ(smol, copy) << "operator= does not work!";
 }

@@ -37,8 +37,11 @@ namespace mc {
 
         // Copy constructor
         vector(const vector& other): m_data{ new T[other.capacity()]},
-                                     m_cap{ other.size() },
-                                     m_sz{ 0 } {}
+                                     m_cap{ other.capacity() },
+                                     m_sz{ other.size() } {
+            // copy over data from other
+            std::copy(other.begin(), other.end(), m_data);
+        }
 
         ~vector(){
             delete[] m_data;
@@ -56,23 +59,23 @@ namespace mc {
         [[maybe_unused]] vector& operator=(const vector& other) {
 
             // Cppcheck: (warning) operatorEqToSelf: 'operator=' should check for assignment to self to avoid problems with dynamic memory.
-            if (other == *this) {
+            if (this == &other) {
                 return *this;
             }
 
-            if (other.size() > m_cap) {
+            if (other.capacity() > m_cap) { // using .size() as compare might be bug
                 // We need to delete our previous array because it is too
                 // small to fit the other.raw() data and create a new array
                 // which will fit the other capacity just fine
 
-                delete[] m_data;
+                delete[] m_data; // release resource in *this
                 m_data = new T[other.capacity()];
-
             }
 
             // copy over data from other
             std::copy(other.begin(), other.end(), m_data);
 
+            // Update member variables
             m_cap = other.capacity();
             m_sz = other.size();
 
