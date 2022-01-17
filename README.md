@@ -2,7 +2,7 @@
 
 ![macos Build workflow](https://github.com/camielverdult/APC-Library/actions/workflows/.github/workflows/main.yml/badge.svg)
 
-Hi all, this is our 2nd Advanced topic for Advanced Programming Concepts. For this topic we are going to dive head-first into two types of standard library types, the `pair` and the `set` type.
+Hi all, this is our 2nd Advanced topic for Advanced Programming Concepts. For this topic we are going to dive head-first into three types of standard library types, the `pair`, `map` and `vector` type.
 
 We have all used various types of containers provided by the C++ standard library before. These containers are the foundation of data storage and manipulation in our C++ programs.
 The C++ standard library takes away the need to set these containers up yourself.
