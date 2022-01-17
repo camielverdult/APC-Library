@@ -636,33 +636,19 @@ So, this class is an mc::vector with typename `mc::pair<Tkey, TValue>`
 
 We will now set up the constructors, which will look as follows:
 ```cpp
-// Normal constructor
-explicit vector(std::size_t capacity):
-    m_data{ new T[capacity] }, // thanks to @zaldawid
-    m_cap{ capacity },
-    m_sz{ 0 } {}
-
-static constexpr std::size_t DEFAULT_CAP{20};
-
-// Default constructor
-vector(): vector(DEFAULT_CAP) {};
-
-// Initializer list constructor
-vector(std::initializer_list<T> list) : vector(DEFAULT_CAP) {
-    for (auto& entry : list) {
-        push_back(entry); // This will update size while pushing back entries
-    }
-}
-
-// Copy constructor
-vector(const vector& other):
-    m_data{ new T[other.capacity()] },
-    m_cap{ other.capacity() },
-    m_sz{ other.size() } {
+    // Default constructor
+    explicit map() : m_vector {} {}
     
-    // copy over data from other vector
-    std::uninitialized_copy(other.begin(), other.end(), m_data);
-}
+    // initializer list constructor
+    map(std::initializer_list<pair_template> list) : map() {
+        for (auto& entry : list) {
+            push_back(entry);
+        }
+    };
+    
+    // Copy constructor, this will call vector's copy constructor which will handle the rest
+    
+    map(const map &other) : m_vector {other.raw()} {}
 ```
 
 We tried using the `static_cast<value_type( ::operator new( capacity * sizeof(value_type) ) )` memory assignment for our pointer. The advantage of this is that `::operator new()` just allocates raw memory, nothing else. We prefer this method of allocating memory because no object construction should take place at the constructor of our vector. There is also a static cast because `::operator new()` returns a `void*` (generic pointer). The compiler will be unable to bind this generic pointer to our value_type pointer.

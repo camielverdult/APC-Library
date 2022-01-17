@@ -37,10 +37,10 @@ namespace mc {
         using vector_template_const_reference = const vector_template&;
 
         // Default constructor
-        [[maybe_unused]] explicit map() : m_vector {} {}
+        explicit map() : m_vector {} {}
 
         // initializer list constructor
-        explicit map(std::initializer_list<pair_template> list) : map() {
+        map(std::initializer_list<pair_template> list) : map() {
             for (auto& entry : list) {
                 push_back(entry);
             }

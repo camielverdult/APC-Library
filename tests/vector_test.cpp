@@ -18,7 +18,7 @@ TEST(vector, int_array_compare) {
     // Initialise empty vector
     mc::vector<int> int_vector(1000);
 
-    std::iota(int_vector.begin(), int_vector.end(), 0);
+    std::iota(int_vector.begin(), int_vector.begin() + int_vector.capacity(), 0);
 
     // Initialise int array
     int numbers[1000];
