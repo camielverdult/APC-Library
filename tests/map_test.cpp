@@ -53,7 +53,7 @@ TEST(map, sort) {
     }
 
     std::sort(numbers, &numbers[1000], [](int first, int second) {
-        return first > second;
+        return first < second;
     });
 
     // Sort our map by calling .sort()
