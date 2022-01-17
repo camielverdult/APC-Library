@@ -18,7 +18,7 @@ We will first look into how these containers are implemented in the GNU ISO libr
 
 The GNU ISO C++ library states the basis of `std::pair` as follows:
 
-```c
+```cpp
   template<typename _T1, typename _T2>
     struct pair
     : private __pair_base<_T1, _T2>
@@ -36,7 +36,7 @@ The GNU ISO C++ library states the basis of `std::pair` as follows:
 Here, `first` and `second` are the pair's private member variables of types `_T1` and `_T2`. This part of the pair class is still fairly straight forward.
 
 The template shows a struct that holds two variables of types `_T1` and `_T2`. `std::pair` has several basic member functions, such as a number of constructors among which:
-```c
+```cpp
 #if __cplusplus >= 201103L
         constexpr pair(const pair&) = default;	///< Copy constructor
         constexpr pair(pair&&) = default;		///< Move constructor
@@ -58,7 +58,7 @@ These are necessary to make a universal library that works with all systems, but
 
 Lastly `std::pair` has several swap functions, one of which looks as follows:
 
-```c
+```cpp
 /// Swap the first members and then the second members.
 _GLIBCXX20_CONSTEXPR void
 swap(pair& __p)
@@ -81,7 +81,7 @@ But first we will look into `std::vector` and `std::map`.
 
 Secondly, we will be looking at `std::vector`. One could say `std::vector` is just a glorified array, which is true to some extent.
 `std::vector` makes use of a base struct `_Vector_base` which looks like this:
-```c
+```cpp
   template<typename _Tp, typename _Alloc>
     struct _Vector_base
     {
@@ -112,7 +112,7 @@ the `vector` class adds functions like a bunch of constructors, `begin()` and `e
 
 All of these functions refer back to the `_Vector_base` struct, as can be seen in the `capacity()` function below:
 
-```c
+```cpp
   size_type
   capacity() const _GLIBCXX_NOEXCEPT
   { return size_type(this->_M_impl._M_end_of_storage
@@ -126,7 +126,7 @@ In our own implementation of the `vector` header, we will get rid of this `_Vect
 
 At its base, `std::map` looks like this:
 
-```c
+```cpp
   template <typename _Key, typename _Tp, typename _Compare = std::less<_Key>,
 	    typename _Alloc = std::allocator<std::pair<const _Key, _Tp> > >
     class map
@@ -165,7 +165,7 @@ A Red-Black tree is used in `std::map` because it is a fast type of container th
 
 A place where this is very clearly visible, is in the `begin()` function of `std::map`:
 
-```c
+```cpp
 //stl_map.h:
     iterator
     begin() _GLIBCXX_NOEXCEPT
@@ -194,7 +194,7 @@ This library will be the MC library, named after its creators.
 
 Starting off with `pair`, we will create a header file `pair.h` and create a basis for the `pair` class in the `mc` namespace:
 
-```c
+```cpp
 namespace mc {
 
     template <typename T1, typename T2>
@@ -218,7 +218,7 @@ Now that we have a place for data to be stored, let's make some constructors tha
 
 Let's start the constructors off with the default and parameterized constructors:
 
-```c
+```cpp
 // Default constructor
 pair() = default;
 
@@ -233,7 +233,7 @@ pair(T1 first, T2 second) :
 
 and a copy constructor:
 
-```c
+```cpp
 // Copy constructor
 pair(const pair& other):
     first{other.first},
@@ -244,11 +244,11 @@ pair(const pair& other):
 ```
 
 Similar to constructors, we might want to do something like:
-```c
+```cpp
 auto d = mc::make_pair(1, 2.4);
 ```
 For this we will implement a `make_pair` function as follows:
-```c
+```cpp
 template <typename T1, typename T2>
 pair<T1, T2> make_pair(T1 first, T2 second) {
     return pair{first, second};
@@ -257,7 +257,7 @@ pair<T1, T2> make_pair(T1 first, T2 second) {
 
 With these constructors we can execute commands like the following:
 
-```c
+```cpp
 mc::pair<int, int> a{};     // sets first and second to 0
 a.first = 1;              // a == (1, 0)
 a.second = 2;             // a == (1, 2)
@@ -270,7 +270,7 @@ auto d = mc::make_pair(1, 2.4);
 
 We can manually print these values to the console to check if the constructors worked correctly
 
-```c
+```cpp
 std::cout << "a: (" << a.first << ", " << a.second << ")\n";
 std::cout << "b: (" << b.first << ", " << b.second << ")\n";
 std::cout << "c: (" << c.first << ", " << c.second << ")\n";
@@ -289,14 +289,17 @@ That works splendidly!
 ####swapping
 Let's now add a swap function, so we can swap the values of two pairs:
 
-```c
-void swap(pair& other){
-    std::swap(first, other.first);
-    std::swap(second, other.second);
+```cpp
+void swap(){
+    using std::swap; // enable 'std::swap' to be found
+    swap(first, second);
+    return *this;
 }
 ```
 One thing to keep in mind is that this function only works if the types T1 and T2 of both pairs match. 
 This is the same with `std::pair`, so we will keep it at this, as we are not here to improve on the library, we are just here to increase our understanding of it.
+
+Another thing that might stand out while looking at the swap function is that we are using std::swap. The reason for this is further explained in [this stack overflow question](https://stackoverflow.com/questions/6380862/how-to-provide-a-swap-function-for-my-class).
 
 ####comparators
 
@@ -305,7 +308,7 @@ We shall now implement some operators that will be able to handle the comparison
 
 `operator<` and `operator>` can be member functions, defined as follows:
 
-```c
+```cpp
 // < compare operator
 bool operator<(const pair<T1, T2>& other) const {
     if (first == other.first) {
@@ -327,7 +330,7 @@ These functions will compare `first` of both pairs first.
 In case these are the same, `second` will decide the result of the comparison.
 
 Example:
-```c
+```cpp
 mc::pair<int, int> a{1,2};
 mc::pair<int, int> b{1,3};
 mc::pair<int, int> c{2,1};
@@ -344,7 +347,7 @@ Lastly `b` is not greater than `c`(1<2) and again `second` is correctly ignored.
 
 Another comparator, maybe an even more important one, is the equal operator, or `operator==`.
 This one looks as follows:
-```c
+```cpp
 template <typename T1, typename T2>
 bool operator==(const pair<T1, T2>& a, const pair<T1, T2>& b) {
     return (a.first() == b.first() and a.second() == b.second());
@@ -355,7 +358,7 @@ An interesting thing we can see here is that the `operator==` takes two pairs.
 This is because it is declared **outside** of the `pair` class.
 
 Example:
-```c
+```cpp
 mc::pair<int, int> a{1,2};
 mc::pair<int, int> b{1,2};
 mc::pair<int, int> c{2,1};
@@ -367,6 +370,9 @@ std::cout << (a==b) << ", " << (a==c) << ", " << (b==c) << std::endl;
 ```
 These outputs speak for themselves. We can see that a(1,2) and b(1,2) are equal, whereas c(2,1) is different.
 
+The inequality operator is automatically generated by the compiler if operator== is defined. (Since C++20)
+See https://en.cppreference.com/w/cpp/language/operators for more information regarding this operator overloading
+
 ####Stream operator
 
 Lastly we will implement a function based around quality of life improvement. 
@@ -375,7 +381,7 @@ It will look like this:
 
 To be able to use this in any scenario, such as file writing, we also want a separate `std::ostream::operator<<` overload.
 It will look as follows:
-```c
+```cpp
 // Out stream operator for pair
 template <typename T1, typename T2>
 std::ostream& operator<<(std::ostream& stream, pair<T1, T2>& other) {
@@ -387,7 +393,7 @@ The function above will again be declared **outside** of the `pair` class.
 It simply takes an output stream and a pair and calls the pair's `print()` function, of which we already know the workings.
 
 Example:
-```c
+```cpp
 mc::pair<int, int> a{1,2};
 mc::pair<int, int> b{1,3};
 mc::pair<int, int> c{2,5};
@@ -405,8 +411,8 @@ Time to move on to `mc::vector`!
 
 ##`mc::vector`
 
-We will start off our vector class the same way we started our pair class:
-```c
+This class manages We will start off our vector class the same way we started our pair class:
+```cpp
 namespace mc {
 
     template <typename T>
@@ -425,36 +431,106 @@ As we can see, it is of type `T*`, meaning it is a pointer to the first element 
 ####Constructors
 
 We will now set up the constructors, which will look as follows:
-```c
+```cpp
+// Normal constructor
 explicit vector(std::size_t capacity):
-        m_data{ new T[capacity]},
-        m_cap{ capacity },
-        m_sz{ 0 } {}
+    m_data{ new T[capacity] }, // thanks to @zaldawid
+    m_cap{ capacity },
+    m_sz{ 0 } {}
 
-// Default constructor using a DEFAULT_CAP of 20
+static constexpr std::size_t DEFAULT_CAP{20};
+
+// Default constructor
 vector(): vector(DEFAULT_CAP) {};
 
-// Parameterized constructor with initializer list
-explicit vector(std::initializer_list<T> list) : vector(DEFAULT_CAP) {
+// Initializer list constructor
+vector(std::initializer_list<T> list) : vector(DEFAULT_CAP) {
     for (auto& entry : list) {
-        push_back(entry);
+        push_back(entry); // This will update size while pushing back entries
     }
-};
+}
 
 // Copy constructor
-vector(const vector& other): m_data{ new T[other.capacity()]},
-                             m_cap{ other.capacity() },
-                             m_sz{ other.size() } {
-    // copy over data from other
-    std::copy(other.begin(), other.end(), m_data);
+vector(const vector& other):
+    m_data{ new T[other.capacity()] },
+    m_cap{ other.capacity() },
+    m_sz{ other.size() } {
+    
+    // copy over data from other vector
+    std::uninitialized_copy(other.begin(), other.end(), m_data);
 }
 ```
 
+We tried using the `static_cast<value_type( ::operator new( capacity * sizeof(value_type) ) )` memory assignment for our pointer. The advantage of this is that `::operator new()` just allocates raw memory, nothing else. We prefer this method of allocating memory because no object construction should take place at the constructor of our vector. There is also a static cast because `::operator new()` returns a `void*` (generic pointer). The compiler will be unable to bind this generic pointer to our value_type pointer.
+
+We did not use this memory assignment method because we were running into issues, and we did not have the time left to debug those issues since we have exams. This is definitely interesting, and we will hopefully come back to this in the future.    
+
+<br>
 With these constructors we can set up vectors in the main like:
 
-```c
+```cpp
 mc::vector<std::string> a{};            // a() empty with capacity 20
 mc::vector<int> b{10};                  // b() empty with capacity 10
 mc::vector<int_wrapper> c{1,2,3,4,5};   // c(1, 2, 3, 4, 5)
 mc::vector<int_wrapper> d{c};           // d(1, 2, 3, 4, 5)
+```
+
+We can manually print the values in the vector to the console to check if the constructors worked correctly:
+
+```cpp
+for (std::size_t i = 0; i < c.size(); i++)
+    std::cout << "c[" << i << "]: " << c[i] << "\n";
+```
+
+This generates the following output:
+```
+c[0]: 1
+c[1]: 2
+c[2]: 3
+c[3]: 4
+c[4]: 5
+```
+
+That works well! But this can get very repetitive when printing vectors often. We have a solution for this! You can read about that solution below.
+
+####Stream operator
+
+Lastly we will implement a function based around quality of life improvement.
+A `operator<<` overload for `std::ostream` will allow us to print the contents of our vector more easily.
+It will look like this:
+
+To be able to use this in any scenario, such as file writing, we also want a separate `std::ostream::operator<<` overload.
+It will look as follows:
+```cpp
+// Out stream operator for vector
+template <typename T>
+std::ostream& operator<<(std::ostream& stream, vector<T>& other) {
+    stream << "{";
+    
+    for (std::size_t i = 0; i < other.size(); i++) {
+        stream << other[i];
+        
+        // Add ', ' between every element except the last
+        if (i != other.size() - 1)
+            stream << ", ";
+    }
+    
+    stream << "}";
+    
+    return stream;
+}
+```
+The function above will again be declared **outside** of the `pair` class.
+It simply takes an output stream and a vector and prints out the content of the vector in a way that you would write a vector declaration with an initializer list into a C++ program.
+
+Example:
+```cpp
+mc::vector<int_wrapper> c{1, 2, 3, 4, 5, 6, 7, 8, 9};
+mc::vector<int_wrapper> d{c}; // d{1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+std::cout << d << "\n";
+```
+Gives the following output:
+```
+vector{1, 2, 3, 4, 5, 6, 7, 8, 9}
 ```

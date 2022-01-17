@@ -63,9 +63,9 @@ namespace mc {
             return first < other.first;
         }
 
-        [[maybe_unused]] pair& swap_alt(){
+        void swap(){
             // see https://stackoverflow.com/questions/6380862/how-to-provide-a-swap-function-for-my-class
-            using std::swap;
+            using std::swap; // enable 'std::swap' to be found
             swap(first, second);
             return *this;
         }
