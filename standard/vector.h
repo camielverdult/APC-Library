@@ -209,7 +209,7 @@ namespace mc {
              */
 
             std::sort(begin(), end(), [](const_reference a, const_reference b){
-                return a > b;
+                return a < b;
             });
         }
 

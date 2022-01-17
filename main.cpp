@@ -67,20 +67,28 @@ int main() {
 
 ///---------------------------------------------------------------------------------------------------------------------
 /// mc::map
+    {
+        // Initializer list constructor
+        mc::map<char, std::string> test{
+                {'a', "apple"},
+                {'g', "giraffe"},
+                {'w', "wonderland"}
+        };
 
-    // Initializer list constructor
-    mc::map<char, std::string> test{
-        {'a', "apple"},
-        {'g', "giraffe"},
-        {'w', "wonderland"}
-    };
+        mc::pair<char, std::string> doggo{'d', "dog"};
+        test.push_back(doggo);
+        test.push_back({'c', "cat"});
 
-    test.push_back({'c', "cat"});
+        test.insert(3, 'b', "banana");
 
-    // Copy constructor
-    mc::map copy = test;
+        // Copy constructor
+        mc::map copy = test;
+        copy.sort();
 
-    std::cout << copy << "\n";
+        std::cout << copy << std::endl;
+    }
+
+///---------------------------------------------------------------------------------------------------------------------
 
     return 0;
 }

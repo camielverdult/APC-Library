@@ -476,7 +476,6 @@ We tried using the `static_cast<value_type( ::operator new( capacity * sizeof(va
 
 We did not use this memory assignment method because we were running into issues, and we did not have the time left to debug those issues since we have exams. This is definitely interesting, and we will hopefully come back to this in the future.
 
-<br>
 With these constructors we can set up vectors in the main like:
 
 ```cpp
@@ -504,9 +503,38 @@ c[4]: 5
 
 That works well! But this can get very repetitive when printing vectors often. We have a solution for this! You can read about that solution below.
 
+####Accessing data
+
+What is a data structure worth if you can't access any of the data? Not a dime we think.
+So let's implement some functions that will let us access the data of our `mc::vector`.
+
+Starting off, we will set up a `begin()` and `end()` function.
+
+```c
+const_pointer begin() const noexcept {
+    return m_data;
+}
+
+const_pointer end() const noexcept {
+    return &m_data[m_sz];
+}
+```
+
+These functions are very simple. They simply return a pointer to the first and last element in the array respectively.
+
+We shall also implement an `operator[]` function to handle access by index. It will look like this:
+
+```c
+reference operator[](std::size_t index){
+    return m_data[index];
+}
+```
+
+This function is not much more complex. Since the raw array that is used in our vector already has functionality for using index accessing, we can simply use that and return the m_data on the given index.
+
 ####Inserting data
 
-We obviously want to be able to store data and manipulate the vector to our desire.
+We obviously also want to be able to easily add data to the vector.
 Three functions we will implement for this are the `insert`, `push_back` and `pop_back` functions.
 These functions will look as follows:
 
@@ -514,11 +542,6 @@ These functions will look as follows:
 void push_back(reference& entry) {
     adjust_cap();
     m_data[m_sz++] = std::move(entry);
-}
-
-void pop_back() noexcept {
-    std::destroy_at(m_data + m_sz - 1); // std::destroy_at calls the destructor of the object pointed to by p, as if by p->~T()
-    --m_sz;
 }
 
 void insert(const std::size_t index, const value_type entry) {
@@ -539,9 +562,9 @@ void insert(const std::size_t index, const value_type entry) {
 ```
 
 `push_back` is very straight forward. It updates the capacity of the vector and adds the entry to the back of the array.
-`pop_back` is fairly straight forward too. It removes the last element in the array and decreases the size by one.
 `insert` is only slightly more complex. It first checks whether the index is in range(if it's not, it will use `push_back`) after which it has to shift the elements of the array to the right and overwrite the data at the given index with `entry`.
 
+Adjusting the capacity efficiently takes its own function. It is described below.
 
 #### Keeping track of capacity
 
@@ -576,6 +599,35 @@ void adjust_cap(std::size_t how_many_extra_elements = 1) {
 ```
 
 This functions checks if the amount of elements we want to store can fit in our current capacity. If our array is not big enough to store new elements, we calculate a new capacity and grow the array. We grow the array by defining a new array, copying over the contents in our current array to the replacement array. After the copy, we destroy the old objects (this calls the destructor of the elements in our array) and we free up the memory. We then set our m_data variable to point to this new piece of memory we just prepared and update the capacity.
+
+#### Erasing data
+
+Finally, in the trend of data manipulation, we have erasing data.
+We will implement a `pop_back` and an `erase` function to allow erasure of data from the vector.
+These functions will be implemented as follows:
+
+```c
+void pop_back() noexcept {
+    std::destroy_at(m_data + m_sz - 1); // std::destroy_at calls the destructor of the object pointed to by p, as if by p->~T()
+    --m_sz;
+}
+
+void erase(std::size_t index) {
+    if (index >= m_sz) {
+        // Index is out of bounds
+        throw "vector_error: erase(i) is out of bounds\n";
+    }
+
+    for (std::size_t i = index; i < m_sz - 1; i++){
+        m_data[i] = m_data[i+1];
+    }
+
+    m_sz--;
+}
+```
+
+`pop_back` is fairly straight forward. It removes the last element in the array and decreases the size by one.
+`erase` is only slightly more complex. it first checks whether the passed index is in range(if it isn't, it throws an exception) after which it shifts the data in the array left, getting rid of the data to be erased in the process.
 
 
 #### Stream operator
@@ -706,7 +758,7 @@ Where `pair_template` is the following:
 using pair_template = mc::pair<TKey, TValue>;
 ```
 
-So, this class is an mc::vector with typename `mc::pair<Tkey, TValue>`
+So, in full, this is a variable of type `mc::vector<mc::pair<Tkey, TValue>>`
 
 ####Constructors
 
@@ -756,9 +808,87 @@ mc::vector{(a, apple), (g, giraffe), (w, wonderland), (c, cat)}
 
 It prints `mc::vector` because map is really just a wrapper around vector.
 
+#### Accessing data
+
+To access the data in our map, we can implement a `begin()` and `end()` function as well as an `operator[]`, similarly to in our `mc::vector`.
+In all fairness, we can simply refer to the `mc::vector` implementation of these functions as the data in our map, at its base, is stored in an `mc::vector`.
+With this in mind, the functions will look as follows:
+
+```c
+pair_template* begin() {
+    return m_vector.begin();
+}
+
+pair_template* end() {
+    return m_vector.end();
+}
+
+[[maybe_unused]] pair_template_reference operator[](std::size_t index) {
+return m_vector[index];
+}
+```
+
+We have already seen how and why these functions work in the part on `mc::vector`, so we don't need to explain them again here.
+
+#### Inserting data
+
+The same as with accessing the data in the map counts for inserting data. The implementations of `mc::vector` are called by the functions in `mc::map`
+These look as follows:
+
+```c
+// Push back function for manual mc::pair<T1, T2>
+void push_back(const pair_template entry) {
+    m_vector.push_back(entry);
+}
+
+// Push back function for pushing back values of template types
+void push_back(const first_type first, const second_type second) {
+    m_vector.push_back(pair_template(first, second));
+}
+
+// Insert function for manual mc::pair<T1, T2>
+void insert(const std::size_t index, const pair_template entry) {
+    m_vector.insert(index, entry);
+}
+
+// Insert function for inserting values of template types
+void insert(const std::size_t index, const first_type first, const second_type second) {
+    m_vector.insert(index, pair_template(first, second));
+}
+```
+
+Note that we have two different functions for `push_back` and for `insert`. This allows for multiple ways of calling these functions such as:
+
+```c
+mc::map<char, std::string> test{};
+
+mc::pair<char, std::string> doggo{'d', "dog"};
+
+test.push_back(doggo);          //This uses the top of the two push_back functions stated in the code block above
+test.push_back({'c', "cat"});   //This uses the top of the two push_back functions stated in the code block above
+test.push_back('a', "ape");     //This uses the bottom of the two push_back functions stated in the code block above
+```
+
 #### Keeping track of capacity
 
-This gets taken care of by the vector when we push back! The map class does not have to do this.
+Capacity management gets taken care of by the vector when we push back! The map class does not have to do this. 
+
+#### Erasing data
+
+For erasing data from the map, just like with inserting data, we refer to the functions of `mc::vector`.
+The functions will then look as follows:
+
+```c
+void pop_back() {
+    m_vector.pop_back();
+}
+
+void erase() {
+    m_vector.erase();
+}
+```
+These functions speak for themselves. 
+If you forgot how these functions worked, you can check the part about `mc::vector` of this report.
 
 #### Stream operator
 
@@ -772,10 +902,37 @@ It will look as follows:
 // Out stream operator for map
 template<typename TKey, typename TValue>
 std::ostream& operator<<(std::ostream& stream, map<TKey, TValue>& other) {
-stream << other.raw();
-return stream;
-}
+    stream << other.raw();
+    return stream;
 }
 ```
-The function above will again be declared **outside** of the `map` class.  It simply takes an output stream and a map and writes the underlying vector to the stream. The vector will handle the outputting to this stream.  
+The function above will again be declared **outside** of the `map` class.  It simply takes an output stream and a map and writes the underlying vector to the stream. The vector will handle the outputting to this stream. 
+This will allow us to print the entire map at once.
 
+Complete `mc::map` example:
+
+```c
+// Initializer list constructor
+mc::map<char, std::string> test{
+    {'a', "apple"},
+    {'g', "giraffe"},
+    {'w', "wonderland"}
+};
+
+mc::pair<char, std::string> doggo{'d', "dog"};
+    test.push_back(doggo);
+    test.push_back({'c', "cat"});
+
+test.insert(3, 'b', "banana");
+
+// Copy constructor
+mc::map copy = test;
+copy.sort();
+
+std::cout << copy << std::endl;
+```
+```
+mc::vector{(a, apple), (b, banana), (c, cat), (d, dog), (g, giraffe), (w, wonderland)}
+```
+That works splendidly. 
+And with all three containers set up and working, that's it!
