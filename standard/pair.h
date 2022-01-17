@@ -32,8 +32,6 @@ namespace mc {
         // Default constructor
         pair() = default;
 
-//        pair() {}
-
         // Parameterized constructor
         pair(T1 first, T2 second): m_first {first}, m_second {second} {}
 
