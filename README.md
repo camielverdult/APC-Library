@@ -408,12 +408,12 @@ a(1, 2), b(1, 3), c(2, 5)
 ```
 
 Of course there are some more functions to the `std::pair` class that we won't go into in this report. 
-We have gained a sufficient understanding of how a pair works and what we can do with it.
+We have gained a sufficient understanding of how a `pair` works and what we can do with it.
 Time to move on to `mc::vector`!
 
 ##`mc::vector`
 
-This class manages We will start off our vector class the same way we started our pair class:
+We will start off our vector class the same way we started our pair class:
 ```cpp
 namespace mc {
 
@@ -438,6 +438,199 @@ using reference = T&;
 using const_reference = const T&;
 ``` 
 This means that m_data is a pointer to the first element of type T in the array. The vector class keeps track of the amount of elements used in the array and will automatically grow the array when the capacity is almost used. This is explained below
+
+####Constructors
+
+We will now set up the constructors, which will look as follows:
+```cpp
+// Normal constructor
+explicit vector(std::size_t capacity):
+    m_data{ new T[capacity] }, // thanks to @zaldawid
+    m_cap{ capacity },
+    m_sz{ 0 } {}
+
+static constexpr std::size_t DEFAULT_CAP{20};
+
+// Default constructor
+vector(): vector(DEFAULT_CAP) {};
+
+// Initializer list constructor
+vector(std::initializer_list<T> list) : vector(DEFAULT_CAP) {
+    for (auto& entry : list) {
+        push_back(entry); // This will update size while pushing back entries
+    }
+}
+
+// Copy constructor
+vector(const vector& other):
+    m_data{ new T[other.capacity()] },
+    m_cap{ other.capacity() },
+    m_sz{ other.size() } {
+    
+    // copy over data from other vector
+    std::uninitialized_copy(other.begin(), other.end(), m_data);
+}
+```
+
+We tried using the `static_cast<value_type( ::operator new( capacity * sizeof(value_type) ) )` memory assignment for our pointer. The advantage of this is that `::operator new()` just allocates raw memory, nothing else. We prefer this method of allocating memory because no object construction should take place at the constructor of our vector. There is also a static cast because `::operator new()` returns a `void*` (generic pointer). The compiler will be unable to bind this generic pointer to our value_type pointer.
+
+We did not use this memory assignment method because we were running into issues, and we did not have the time left to debug those issues since we have exams. This is definitely interesting, and we will hopefully come back to this in the future.
+
+<br>
+With these constructors we can set up vectors in the main like:
+
+```cpp
+mc::vector<std::string> a{};            // a() empty with capacity 20
+mc::vector<int> b{10};                  // b() empty with capacity 10
+mc::vector<int_wrapper> c{1,2,3,4,5};   // c(1, 2, 3, 4, 5)
+mc::vector<int_wrapper> d{c};           // d(1, 2, 3, 4, 5)
+```
+
+We can manually print the values in the vector to the console to check if the constructors worked correctly:
+
+```cpp
+for (std::size_t i = 0; i < c.size(); i++)
+    std::cout << "c[" << i << "]: " << c[i] << "\n";
+```
+
+This generates the following output:
+```
+c[0]: 1
+c[1]: 2
+c[2]: 3
+c[3]: 4
+c[4]: 5
+```
+
+That works well! But this can get very repetitive when printing vectors often. We have a solution for this! You can read about that solution below.
+
+#### Keeping track of capacity
+
+```cpp
+static constexpr std::size_t GROWTH_FACTOR{2};
+void adjust_cap(std::size_t how_many_extra_elements = 1) {
+
+    std::size_t required_capacity = m_sz + how_many_extra_elements;
+
+    if (required_capacity > m_cap) {
+        std::size_t new_capacity = m_cap;
+
+        // Calculate new capacity
+        while (new_capacity <= required_capacity)
+            new_capacity *= GROWTH_FACTOR;
+        
+        pointer replacement = new T[new_capacity];
+
+        // Move over contents of array to replacement
+        std::uninitialized_move(begin(), end(), replacement);
+
+        // Destroy left over elements
+        std::destroy_n(m_data, m_sz);
+
+        // Delete old memory
+        delete[] m_data;
+
+        m_data = replacement;
+        m_cap = new_capacity;
+    }
+}
+```
+
+This functions checks if the amount of elements we want to store can fit in our current capacity. If our array is not big enough to store new elements, we calculate a new capacity and grow the array. We grow the array by defining a new array, copying over the contents in our current array to the replacement array. After the copy, we destroy the old objects (this calls the destructor of the elements in our array) and we free up the memory. We then set our m_data variable to point to this new piece of memory we just prepared and update the capacity.
+
+
+#### Stream operator
+
+Lastly we will implement a function based around quality of life improvement.
+A `operator<<` overload for `std::ostream` will allow us to print the contents of our vector more easily.
+It will look like this:
+
+To be able to use this in any scenario, such as file writing, we also want a separate `std::ostream::operator<<` overload.
+It will look as follows:
+```cpp
+// Out stream operator for vector
+template <typename T>
+std::ostream& operator<<(std::ostream& stream, vector<T>& other) {
+    stream << "{";
+    
+    for (std::size_t i = 0; i < other.size(); i++) {
+        stream << other[i];
+        
+        // Add ', ' between every element except the last
+        if (i != other.size() - 1)
+            stream << ", ";
+    }
+    
+    stream << "}";
+    
+    return stream;
+}
+```
+The function above will again be declared **outside** of the `vector` class.
+It simply takes an output stream and a vector and prints out the content of the vector in a way that you would write a vector declaration with an initializer list into a C++ program.
+
+Example:
+```cpp
+mc::vector<int_wrapper> c{1, 2, 3, 4, 5, 6, 7, 8, 9};
+mc::vector<int_wrapper> d{c}; // d{1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+std::cout << d << "\n";
+```
+Gives the following output:
+```
+vector{1, 2, 3, 4, 5, 6, 7, 8, 9}
+```
+
+
+##`mc::map`
+
+This class stores a list of key value pairs. We will start off our map class the same way we started our vector and pair classes:
+```cpp
+namespace mc {
+
+    template<typename TKey, typename TValue>
+    class map { // This whole class is a wrapper around an mc::vector<mc::pair>
+    public:
+        
+        using first_type = TKey;
+        using first_pointer = TKey*;
+        using first_reference = TKey&;
+        using first_const_reference = const TKey&;
+
+        using second_type = TValue;
+        using second_pointer = TValue*;
+        using second_reference = TValue&;
+        using second_const_reference = const TValue&;
+
+        using pair_template = mc::pair<TKey, TValue>;
+        using pair_template_pointer = pair_template*;
+        using pair_template_reference = pair_template&;
+        using pair_template_const_reference = const pair_template&;
+
+        using vector_template = mc::vector<pair_template>;
+        using vector_template_pointer = vector_template*;
+        using vector_template_reference = vector_template&;
+        using vector_template_const_reference = const vector_template&;
+        
+    private:
+        vector_template m_vector;
+    };
+}
+```
+
+Here m_vector is our underlying data structure. As we can see m_vector is of type `vector_template`, this is defined in the class (among with other definitions to probe the vector class easily) to be:
+
+```cpp
+using vector_template = mc::vector<pair_template>;
+```
+
+Where `pair_template` is the following:
+
+```cpp
+using pair_template = mc::pair<TKey, TValue>;
+```
+
+So, this class is an mc::vector with typename `mc::pair<Tkey, TValue>`
 
 ####Constructors
 

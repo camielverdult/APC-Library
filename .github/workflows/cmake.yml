@@ -44,5 +44,8 @@ jobs:
         with:
           name: tests-executable
 
+      - name: Apply permissions
+        run: chmod +x ${{steps.download.outputs.download-path}}/mc_lib_tests
+
       - name: Run generated tests
         run: ${{steps.download.outputs.download-path}}/mc_lib_tests
