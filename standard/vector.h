@@ -246,7 +246,6 @@ namespace mc {
                 while (new_capacity <= required_capacity)
                     new_capacity *= GROWTH_FACTOR;
 
-                //
                 pointer replacement = new T[new_capacity];
 
                 // Move over contents of array to replacement
