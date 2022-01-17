@@ -59,16 +59,16 @@ These are necessary to make a universal library that works with all systems, but
 Lastly `std::pair` has several swap functions, one of which looks as follows:
 
 ```c
-    /// Swap the first members and then the second members.
-    _GLIBCXX20_CONSTEXPR void
-    swap(pair& __p)
-    noexcept(__and_<__is_nothrow_swappable<_T1>,
-            __is_nothrow_swappable<_T2>>::value)
-    {
-        using std::swap;
-        swap(first, __p.first);
-        swap(second, __p.second);
-    }
+/// Swap the first members and then the second members.
+_GLIBCXX20_CONSTEXPR void
+swap(pair& __p)
+noexcept(__and_<__is_nothrow_swappable<_T1>,
+        __is_nothrow_swappable<_T2>>::value)
+{
+    using std::swap;
+    swap(first, __p.first);
+    swap(second, __p.second);
+}
 ```
 
 As we can see in this example, `std::pair::swap()` makes use of `std::swap()` to swap the member variables of one pair with those of a second pair.
@@ -113,10 +113,10 @@ the `vector` class adds functions like a bunch of constructors, `begin()` and `e
 All of these functions refer back to the `_Vector_base` struct, as can be seen in the `capacity()` function below:
 
 ```c
-      size_type
-      capacity() const _GLIBCXX_NOEXCEPT
-      { return size_type(this->_M_impl._M_end_of_storage
-			 - this->_M_impl._M_start); }
+  size_type
+  capacity() const _GLIBCXX_NOEXCEPT
+  { return size_type(this->_M_impl._M_end_of_storage
+         - this->_M_impl._M_start); }
 ```
 
 In our own implementation of the `vector` header, we will get rid of this `_Vector_base` subclass and focus on simplicity to help you understand how `vector` works at its base.
@@ -190,7 +190,7 @@ To further illustrate, we will now implement the functionalities of `std::pair`,
 This library will be the MC library, named after its creators.
 
 
-###`mc::pair`
+##`mc::pair`
 
 Starting off with `pair`, we will create a header file `pair.h` and create a basis for the `pair` class in the `mc` namespace:
 
@@ -243,30 +243,192 @@ pair(const pair& other):
     }
 ```
 
+Similar to constructors, we might want to do something like:
+```c
+auto d = mc::make_pair(1, 2.4);
+```
+For this we will implement a `make_pair` function as follows:
+```c
+template <typename T1, typename T2>
+pair<T1, T2> make_pair(T1 first, T2 second) {
+    return pair{first, second};
+}
+```
+
 With these constructors we can execute commands like the following:
 
 ```c
-mc::pair<int, int> a{};     // sets m_first and m_second to nullptr
-a.m_first = 1;              // a == {1, nullptr}
-a.m_second = 2;             // a == {1, 2}
+mc::pair<int, int> a{};     // sets m_first and m_second to 0
+a.m_first = 1;              // a == (1, 0)
+a.m_second = 2;             // a == (1, 2)
 
-mc::pair<int, std::string> b{1, "hello"};   // b == {1, "hello"}
-mc::pair<int, std::string> c{b};            // c == {1, "hello"}
+mc::pair<int, std::string> b{1, "hello"};   // b == (1, "hello")
+mc::pair<int, std::string> c{b};            // c == (1, "hello")
+
+auto d = mc::make_pair(1, 2.4);
 ```
 
 We can manually print these values to the console to check if the constructors worked correctly
 
 ```c
-std::cout << "a: {" << a.m_first << ", " << a.m_second << "}\n";
-std::cout << "b: {" << b.m_first << ", " << b.m_second << "}\n";
-std::cout << "c: {" << c.m_first << ", " << c.m_second << "}\n";
+std::cout << "a: (" << a.m_first << ", " << a.m_second << ")\n";
+std::cout << "b: (" << b.m_first << ", " << b.m_second << ")\n";
+std::cout << "c: (" << c.m_first << ", " << c.m_second << ")\n";
+std::cout << "d: (" << d.m_first << ", " << d.m_second << ")\n";
 ```
 
 This generates the following output:
 ```
-a: {1, 2}
-b: {1, hello}
-c: {1, hello}
+a: (1, 2)
+b: (1, hello)
+c: (1, hello)
 ```
 
 That works splendidly!
+
+####swapping
+Let's now add a swap function, so we can swap the values of two pairs:
+
+```c
+void swap(pair& other){
+    std::swap(m_first, other.m_first);
+    std::swap(m_second, other.m_second);
+}
+```
+One thing to keep in mind is that this function only works if the types T1 and T2 of both pairs match. 
+This is the same with `std::pair`, so we will keep it at this, as we are not here to improve on the library, we are just here to increase our understanding of it.
+
+####comparators
+
+We may very well like to compare the pairs at some point. 
+We shall now implement some operators that will be able to handle the comparison of two pairs (of the same type).
+
+`operator<` and `operator>` can be member functions, defined as follows:
+
+```c
+// < compare operator
+bool operator<(const pair<T1, T2>& other) const {
+    if (m_first == other.m_first) {
+        return m_second < other.m_second;
+    }
+    return m_first < other.m_first;
+}
+
+// > compare operator
+bool operator>(const pair<T1, T2>& other) const {
+    if (m_first == other.m_first) {
+        return m_second > other.m_second;
+    }
+    return m_first > other.m_first;
+}
+```
+
+These functions will compare `m_first` of both pairs first. 
+In case these are the same, `m_second` will decide the result of the comparison.
+
+Example:
+```c
+mc::pair<int, int> a{1,2};
+mc::pair<int, int> b{1,3};
+mc::pair<int, int> c{2,1};
+
+std::cout << (a<b) << ", " << (a>c) << ", " << (b>c) << std::endl;
+
+```
+```
+1, 0, 0
+```
+Looking at the output we can see that `a` is indeed smaller that `b`(1 == 1, 2 < 3),
+`a` is not greater than `c`(1 < 2) and `m_second` is correctly ignored in the comparison.
+Lastly `b` is not greater than `c`(1<2) and again `m_second` is correctly ignored.
+
+Another comparator, maybe an even more important one, is the equal operator, or `operator==`.
+This one looks as follows:
+```c
+template <typename T1, typename T2>
+bool operator==(const pair<T1, T2>& a, const pair<T1, T2>& b) {
+    return (a.first() == b.first() and a.second() == b.second());
+}
+```
+
+An interesting thing we can see here is that the `operator==` takes two pairs.
+This is because it is declared **outside** of the `pair` class.
+
+Example:
+```c
+mc::pair<int, int> a{1,2};
+mc::pair<int, int> b{1,2};
+mc::pair<int, int> c{2,1};
+
+std::cout << (a==b) << ", " << (a==c) << ", " << (b==c) << std::endl;
+```
+```
+1, 0, 0
+```
+These outputs speak for themselves. We can see that a(1,2) and b(1,2) are equal, whereas c(2,1) is different.
+
+####Stream operator
+
+Lastly we will implement a function based around quality of life improvement. 
+The combination of a `print()` member function and a `operator<<` overload for `std::ostream` will allow us to print the contents of our pair more easily.
+We shall first implement the print function. It will look like this:
+```c
+[[maybe_unused]] void print(std::ostream& stream = std::cout) {
+    stream << "(" << m_first << ", " << m_second << ")";
+}
+```
+Example:
+```c
+mc::pair<int, int> a{1,2};
+a.print();
+```
+```
+(1,2)
+```
+
+To be able to use this in any scenario, such as file writing, we also want a separate `std::ostream::operator<<` overload.
+It will look as follows:
+```c
+template <typename T1, typename T2>
+std::ostream& operator<<(std::ostream& stream, pair<T1, T2>& other) {
+    other.print();
+    return stream;
+}
+```
+The function above will again be declared **outside** of the `pair` class. 
+It simply takes an output stream and a pair and calls the pair's `print()` function, of which we already know the workings.
+
+Example:
+```c
+mc::pair<int, int> a{1,2};
+mc::pair<int, int> b{1,3};
+mc::pair<int, int> c{2,5};
+
+std::cout << "a" << a << ", b" << b << ", c" << c << std::endl;
+```
+```
+a(1, 2), b(1, 3), c(2, 5)
+```
+
+Of course there are some more functions to the `std::pair` class that we won't go into in this report. 
+We have gained a sufficient understanding of how a pair works and what we can do with it.
+Time to move on to `mc::vector`!
+
+##`mc::vector`
+
+We will start off our vector class the same way we started our pair class:
+```c
+namespace mc {
+
+    template <typename T>
+    class vector {
+    
+    private:
+        T* m_data;
+        std::size_t m_cap;
+        std::size_t m_sz;
+    };
+}
+```
+Here m_data is our raw array holding the data. 
+As we can see, it is of type `T*`, meaning it is a pointer to the first element of type T in the array.

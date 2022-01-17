@@ -8,6 +8,21 @@
 
 #include <iostream>
 
+struct int_wrapper{
+    int value;
+    int_wrapper()= default;
+    int_wrapper(int v): value{v}{}
+
+    int_wrapper& operator=(int v){
+        value = v;
+        return *this;
+    }
+
+    operator int() const {
+        return value;
+    }
+};
+
 int main() {
     /*
      * Our main function will display functionality in our std::vector and std::pair re-makes
@@ -105,16 +120,30 @@ int main() {
 //    return 0;
 
 
-    mc::pair<int, int> a{};     // sets m_first and m_second to nullptr
-    a.m_first = 1;              // a == {1, nullptr}
-    a.m_second = 2;             // a == {1, 2}
+//    mc::vector<int_wrapper> vec{3,6,7,4};
+//
+//    mc::pair<int_wrapper, int_wrapper> a{};     // sets m_first and m_second to 0
+//    a.m_first = 1;              // a == (1, 0)
+//    a.m_second = 2;             // a == (1, 2)
+//
+//    mc::pair<int, std::string> b{1, "hello"};   // b == (1, "hello")
+//    mc::pair<int, std::string> c{b};            // c == (1, "hello")
+//
+//    auto d = mc::make_pair(1, 2.4);
+//
+//    std::cout << "a: (" << a.m_first << ", " << a.m_second << ")\n";
+//    std::cout << "b: (" << b.m_first << ", " << b.m_second << ")\n";
+//    std::cout << "c: (" << c.m_first << ", " << c.m_second << ")\n";
+//    std::cout << "d: (" << d.m_first << ", " << d.m_second << ")\n";
+//
+//    std::cout << vec << std::endl;
 
-    mc::pair<int, std::string> b{1, "hello"};   // b == {1, "hello"}
-    mc::pair<int, std::string> c{b};            // c == {1, "hello"}
+    mc::pair<int, int> a{1,2};
+    mc::pair<int, int> b{1,3};
+    mc::pair<int, int> c{2,5};
 
-    std::cout << "a: {" << a.m_first << ", " << a.m_second << "}\n";
-    std::cout << "b: {" << b.m_first << ", " << b.m_second << "}\n";
-    std::cout << "c: {" << c.m_first << ", " << c.m_second << "}\n";
+    std::cout << (a<b) << ", " << (a>c) << ", " << (b>c) << std::endl;
 
+    std::cout << "a" << a << ", b" << b << ", c" << c << std::endl;
     return 0;
 }

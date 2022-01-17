@@ -26,8 +26,13 @@ namespace mc {
         using second_reference = T2&;
         using second_const_reference = const T2&;
 
+        T1 m_first;
+        T2 m_second;
+
         // Default constructor
         pair() = default;
+
+//        pair() {}
 
         // Parameterized constructor
         pair(T1 first, T2 second): m_first {first}, m_second {second} {}
@@ -66,20 +71,25 @@ namespace mc {
             // the call to std::cout << ...
         }
 
-
-        // Function for swapping first and second
-        // This only works if the T1 and T2 are of the same type
-        [[maybe_unused]] pair& swap() {
-            std::swap(m_first, m_second);
-            return *this;
+        // Function for swapping the values of two pairs.
+        // Only works if the pairs are of the same types.
+        void swap(pair& other){
+            std::swap(m_first, other.m_first);
+            std::swap(m_second, other.m_second);
         }
 
-        [[maybe_unused]] std::size_t size() {
-            return sizeof(*this);
-        }
-
-        T1 m_first;
-        T2 m_second;
+// Wrong kind of swap:
+//        // Function for swapping first and second
+//        // This only works if the T1 and T2 are of the same type
+//        [[maybe_unused]] pair& swap() {
+//            std::swap(m_first, m_second);
+//            return *this;
+//        }
+//
+// Pair doesn't need a size function:
+//        [[maybe_unused]] std::size_t size() {
+//            return sizeof(*this);
+//        }
     };
 
     // Out stream operator for pair
