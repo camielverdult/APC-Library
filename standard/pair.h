@@ -61,14 +61,6 @@ namespace mc {
             return first < other.first;
         }
 
-        // Print function
-        [[maybe_unused]] void print(std::ostream& stream = std::cout) {
-            stream << "(" << first << ", " << second << ")";
-
-            // We don't add a newline or std::endl because we might already do that in
-            // the call to std::cout << ...
-        }
-
         // Function for swapping the values of two pairs.
         // Only works if the pairs are of the same types.
         void swap(pair& other){
@@ -80,7 +72,7 @@ namespace mc {
     // Out stream operator for pair
     template <typename T1, typename T2>
     std::ostream& operator<<(std::ostream& stream, pair<T1, T2>& other) {
-        other.print();
+        stream << "(" << other.first << ", " << other.second << ")";
         return stream;
     }
 

@@ -370,29 +370,17 @@ These outputs speak for themselves. We can see that a(1,2) and b(1,2) are equal,
 ####Stream operator
 
 Lastly we will implement a function based around quality of life improvement. 
-The combination of a `print()` member function and a `operator<<` overload for `std::ostream` will allow us to print the contents of our pair more easily.
-We shall first implement the print function. It will look like this:
-```c
-[[maybe_unused]] void print(std::ostream& stream = std::cout) {
-    stream << "(" << first << ", " << second << ")";
-}
-```
-Example:
-```c
-mc::pair<int, int> a{1,2};
-a.print();
-```
-```
-(1,2)
-```
+A `operator<<` overload for `std::ostream` will allow us to print the contents of our pair more easily.
+It will look like this:
 
 To be able to use this in any scenario, such as file writing, we also want a separate `std::ostream::operator<<` overload.
 It will look as follows:
 ```c
+// Out stream operator for pair
 template <typename T1, typename T2>
 std::ostream& operator<<(std::ostream& stream, pair<T1, T2>& other) {
-    other.print();
-    return stream;
+stream << "(" << other.first << ", " << other.second << ")";
+return stream;
 }
 ```
 The function above will again be declared **outside** of the `pair` class. 
