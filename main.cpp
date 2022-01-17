@@ -65,6 +65,20 @@ int main() {
         std::cout << d << "\n";
     }
 
+///---------------------------------------------------------------------------------------------------------------------
+/// mc::map
+
+    // Initializer list constructor
+    mc::map<char, std::string> test{
+        {'a', "apple"},
+        {'g', "giraffe"},
+        {'w', "wonderland"}
+    };
+
+    test.push_back({'c', "cat"});
+
+    // Copy constructor
+    mc::map copy = test;
 
     return 0;
 }

@@ -651,18 +651,20 @@ We will now set up the constructors, which will look as follows:
     map(const map &other) : m_vector {other.raw()} {}
 ```
 
-We tried using the `static_cast<value_type( ::operator new( capacity * sizeof(value_type) ) )` memory assignment for our pointer. The advantage of this is that `::operator new()` just allocates raw memory, nothing else. We prefer this method of allocating memory because no object construction should take place at the constructor of our vector. There is also a static cast because `::operator new()` returns a `void*` (generic pointer). The compiler will be unable to bind this generic pointer to our value_type pointer.
-
-We did not use this memory assignment method because we were running into issues, and we did not have the time left to debug those issues since we have exams. This is definitely interesting, and we will hopefully come back to this in the future.
-
-<br>
-With these constructors we can set up vectors in the main like:
+With these constructors we can set up maps in the main like:
 
 ```cpp
-mc::vector<std::string> a{};            // a() empty with capacity 20
-mc::vector<int> b{10};                  // b() empty with capacity 10
-mc::vector<int_wrapper> c{1,2,3,4,5};   // c(1, 2, 3, 4, 5)
-mc::vector<int_wrapper> d{c};           // d(1, 2, 3, 4, 5)
+// Initializer list constructor
+mc::map<char, std::string> test{
+    {'a', "apple"},
+    {'g', "giraffe"},
+    {'w', "wonderland"}
+};
+
+test.push_back({'c', "cat"});
+
+// Copy constructor
+mc::map copy = test;
 ```
 
 We can manually print the values in the vector to the console to check if the constructors worked correctly:

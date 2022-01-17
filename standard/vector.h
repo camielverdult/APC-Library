@@ -251,7 +251,7 @@ namespace mc {
                 // Move over contents of array to replacement
                 std::uninitialized_move(begin(), end(), replacement);
 
-                // Destroy left over elements
+                // Destroy left over elements, this calls their destructor
                 std::destroy_n(m_data, m_sz);
 
                 // Delete old memory
