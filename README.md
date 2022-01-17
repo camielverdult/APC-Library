@@ -394,6 +394,7 @@ mc::pair<int, int> c{2,5};
 
 std::cout << "a" << a << ", b" << b << ", c" << c << std::endl;
 ```
+
 ```
 a(1, 2), b(1, 3), c(2, 5)
 ```
@@ -448,7 +449,9 @@ vector(const vector& other): m_data{ new T[other.capacity()]},
     std::copy(other.begin(), other.end(), m_data);
 }
 ```
+
 With these constructors we can set up vectors in the main like:
+
 ```c
 mc::vector<std::string> a{};            // a() empty with capacity 20
 mc::vector<int> b{10};                  // b() empty with capacity 10
