@@ -29,11 +29,10 @@ jobs:
             build_type: "Release",
             cc: "gcc",
             cxx: "g++",
-            archiver: "7z a",
             generators: "Ninja"
           }
           - {
-            name: "Ubuntu_Latest_GCC",
+            name: "Ubuntu Latest GCC",
             os: ubuntu-latest,
             build_type: "Release",
             cc: "gcc",
@@ -91,6 +90,7 @@ jobs:
             -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} \
             -G "${{ matrix.config.generators }}" \
             -DCMAKE_INSTALL_PREFIX:PATH=instdir
+
       - name: Build
         shell: bash
         run: cmake --build . --config ${{ matrix.config.build_type }}
