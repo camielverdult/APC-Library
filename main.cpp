@@ -122,19 +122,19 @@ int main() {
 
 //    mc::vector<int_wrapper> vec{3,6,7,4};
 //
-//    mc::pair<int_wrapper, int_wrapper> a{};     // sets m_first and m_second to 0
-//    a.m_first = 1;              // a == (1, 0)
-//    a.m_second = 2;             // a == (1, 2)
+//    mc::pair<int_wrapper, int_wrapper> a{};     // sets first and second to 0
+//    a.first = 1;              // a == (1, 0)
+//    a.second = 2;             // a == (1, 2)
 //
 //    mc::pair<int, std::string> b{1, "hello"};   // b == (1, "hello")
 //    mc::pair<int, std::string> c{b};            // c == (1, "hello")
 //
 //    auto d = mc::make_pair(1, 2.4);
 //
-//    std::cout << "a: (" << a.m_first << ", " << a.m_second << ")\n";
-//    std::cout << "b: (" << b.m_first << ", " << b.m_second << ")\n";
-//    std::cout << "c: (" << c.m_first << ", " << c.m_second << ")\n";
-//    std::cout << "d: (" << d.m_first << ", " << d.m_second << ")\n";
+//    std::cout << "a: (" << a.first << ", " << a.second << ")\n";
+//    std::cout << "b: (" << b.first << ", " << b.second << ")\n";
+//    std::cout << "c: (" << c.first << ", " << c.second << ")\n";
+//    std::cout << "d: (" << d.first << ", " << d.second << ")\n";
 //
 //    std::cout << vec << std::endl;
 

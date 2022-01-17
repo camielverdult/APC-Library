@@ -201,15 +201,15 @@ namespace mc {
     class pair {
         
     public:
-        T1 m_first;
-        T2 m_second;
+        T1 first;
+        T2 second;
     };
     
 }
 ```
 
 We declare a template with typenames `T1` and `T2` for the ability to handle any variable/container type.
-We declare two member variables `m_first` and `m_second` of type `T1` and `T2` respectively.
+We declare two member variables `first` and `second` of type `T1` and `T2` respectively.
 These variables are public just like in the `std::pair` implementation.
 
 Now that we have a place for data to be stored, let's make some constructors that can actually get data in our pair.
@@ -224,8 +224,8 @@ pair() = default;
 
 // Parameterized constructor
 pair(T1 first, T2 second) : 
-    m_first {first}, 
-    m_second {second}
+    first {first}, 
+    second {second}
     {
         //Nothing to do here
     }
@@ -236,8 +236,8 @@ and a copy constructor:
 ```c
 // Copy constructor
 pair(const pair& other):
-    m_first{other.m_first},
-    m_second{other.m_second}
+    first{other.first},
+    second{other.second}
     {
         //Nothing to do here
     }
@@ -258,9 +258,9 @@ pair<T1, T2> make_pair(T1 first, T2 second) {
 With these constructors we can execute commands like the following:
 
 ```c
-mc::pair<int, int> a{};     // sets m_first and m_second to 0
-a.m_first = 1;              // a == (1, 0)
-a.m_second = 2;             // a == (1, 2)
+mc::pair<int, int> a{};     // sets first and second to 0
+a.first = 1;              // a == (1, 0)
+a.second = 2;             // a == (1, 2)
 
 mc::pair<int, std::string> b{1, "hello"};   // b == (1, "hello")
 mc::pair<int, std::string> c{b};            // c == (1, "hello")
@@ -271,10 +271,10 @@ auto d = mc::make_pair(1, 2.4);
 We can manually print these values to the console to check if the constructors worked correctly
 
 ```c
-std::cout << "a: (" << a.m_first << ", " << a.m_second << ")\n";
-std::cout << "b: (" << b.m_first << ", " << b.m_second << ")\n";
-std::cout << "c: (" << c.m_first << ", " << c.m_second << ")\n";
-std::cout << "d: (" << d.m_first << ", " << d.m_second << ")\n";
+std::cout << "a: (" << a.first << ", " << a.second << ")\n";
+std::cout << "b: (" << b.first << ", " << b.second << ")\n";
+std::cout << "c: (" << c.first << ", " << c.second << ")\n";
+std::cout << "d: (" << d.first << ", " << d.second << ")\n";
 ```
 
 This generates the following output:
@@ -291,8 +291,8 @@ Let's now add a swap function, so we can swap the values of two pairs:
 
 ```c
 void swap(pair& other){
-    std::swap(m_first, other.m_first);
-    std::swap(m_second, other.m_second);
+    std::swap(first, other.first);
+    std::swap(second, other.second);
 }
 ```
 One thing to keep in mind is that this function only works if the types T1 and T2 of both pairs match. 
@@ -308,23 +308,23 @@ We shall now implement some operators that will be able to handle the comparison
 ```c
 // < compare operator
 bool operator<(const pair<T1, T2>& other) const {
-    if (m_first == other.m_first) {
-        return m_second < other.m_second;
+    if (first == other.first) {
+        return second < other.second;
     }
-    return m_first < other.m_first;
+    return first < other.first;
 }
 
 // > compare operator
 bool operator>(const pair<T1, T2>& other) const {
-    if (m_first == other.m_first) {
-        return m_second > other.m_second;
+    if (first == other.first) {
+        return second > other.second;
     }
-    return m_first > other.m_first;
+    return first > other.first;
 }
 ```
 
-These functions will compare `m_first` of both pairs first. 
-In case these are the same, `m_second` will decide the result of the comparison.
+These functions will compare `first` of both pairs first. 
+In case these are the same, `second` will decide the result of the comparison.
 
 Example:
 ```c
@@ -339,8 +339,8 @@ std::cout << (a<b) << ", " << (a>c) << ", " << (b>c) << std::endl;
 1, 0, 0
 ```
 Looking at the output we can see that `a` is indeed smaller that `b`(1 == 1, 2 < 3),
-`a` is not greater than `c`(1 < 2) and `m_second` is correctly ignored in the comparison.
-Lastly `b` is not greater than `c`(1<2) and again `m_second` is correctly ignored.
+`a` is not greater than `c`(1 < 2) and `second` is correctly ignored in the comparison.
+Lastly `b` is not greater than `c`(1<2) and again `second` is correctly ignored.
 
 Another comparator, maybe an even more important one, is the equal operator, or `operator==`.
 This one looks as follows:
@@ -374,7 +374,7 @@ The combination of a `print()` member function and a `operator<<` overload for `
 We shall first implement the print function. It will look like this:
 ```c
 [[maybe_unused]] void print(std::ostream& stream = std::cout) {
-    stream << "(" << m_first << ", " << m_second << ")";
+    stream << "(" << first << ", " << second << ")";
 }
 ```
 Example:
@@ -432,3 +432,32 @@ namespace mc {
 ```
 Here m_data is our raw array holding the data. 
 As we can see, it is of type `T*`, meaning it is a pointer to the first element of type T in the array.
+
+####Constructors
+
+We will now set up the constructors, which will look as follows:
+```c
+explicit vector(std::size_t capacity):
+        m_data{ new T[capacity]},
+        m_cap{ capacity },
+        m_sz{ 0 } {}
+
+// Default constructor
+vector(): vector(DEFAULT_CAP) {};
+
+
+explicit vector(std::initializer_list<T> list) : vector(DEFAULT_CAP) {
+    for (auto& entry : list) {
+        push_back(entry);
+    }
+};
+
+// Copy constructor
+vector(const vector& other): m_data{ new T[other.capacity()]},
+                             m_cap{ other.capacity() },
+                             m_sz{ other.size() } {
+    // copy over data from other
+    std::copy(other.begin(), other.end(), m_data);
+}
+
+```

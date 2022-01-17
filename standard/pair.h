@@ -26,46 +26,44 @@ namespace mc {
         using second_reference = T2&;
         using second_const_reference = const T2&;
 
-        T1 m_first;
-        T2 m_second;
+        T1 first;
+        T2 second;
 
         // Default constructor
         pair() = default;
 
-//        pair() {}
-
         // Parameterized constructor
-        pair(T1 first, T2 second): m_first {first}, m_second {second} {}
+        pair(T1 first, T2 second): first {first}, second {second} {}
 
         // Copy constructor
-        pair(const pair& other): m_first{other.m_first}, m_second{other.m_second} {}
+        pair(const pair& other): first{other.first}, second{other.second} {}
 
         // Copy assignment operator
         pair& operator=(pair other) {
-            m_first = other.m_first;
-            m_second = other.m_second;
+            first = other.first;
+            second = other.second;
             return *this;
         }
 
         // > compare operator
         bool operator>(const pair<T1, T2>& other) const {
-            if (m_first == other.m_first) {
-                return m_second > other.m_second;
+            if (first == other.first) {
+                return second > other.second;
             }
-            return m_first > other.m_first;
+            return first > other.first;
         }
 
         // < compare operator
         bool operator<(const pair<T1, T2>& other) const {
-            if (m_first == other.m_first) {
-                return m_second < other.m_second;
+            if (first == other.first) {
+                return second < other.second;
             }
-            return m_first < other.m_first;
+            return first < other.first;
         }
 
         // Print function
         [[maybe_unused]] void print(std::ostream& stream = std::cout) {
-            stream << "(" << m_first << ", " << m_second << ")";
+            stream << "(" << first << ", " << second << ")";
 
             // We don't add a newline or std::endl because we might already do that in
             // the call to std::cout << ...
@@ -74,22 +72,9 @@ namespace mc {
         // Function for swapping the values of two pairs.
         // Only works if the pairs are of the same types.
         void swap(pair& other){
-            std::swap(m_first, other.m_first);
-            std::swap(m_second, other.m_second);
+            std::swap(first, other.first);
+            std::swap(second, other.second);
         }
-
-// Wrong kind of swap:
-//        // Function for swapping first and second
-//        // This only works if the T1 and T2 are of the same type
-//        [[maybe_unused]] pair& swap() {
-//            std::swap(m_first, m_second);
-//            return *this;
-//        }
-//
-// Pair doesn't need a size function:
-//        [[maybe_unused]] std::size_t size() {
-//            return sizeof(*this);
-//        }
     };
 
     // Out stream operator for pair
