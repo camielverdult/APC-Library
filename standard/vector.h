@@ -8,8 +8,6 @@
 #include <algorithm>
 #include <initializer_list>
 
-#define DEFAULT_CAP 20
-
 namespace mc {
 
     template <typename T>
@@ -19,31 +17,43 @@ namespace mc {
         // It’s a good idea to define those. Others can then easily probe a vector object in generic code.
         using value_type = T;
         using pointer = T*;
+        using const_pointer = const T*;
         using reference = T&;
         using const_reference = const T&;
 
+        // Normal constructor
         explicit vector(std::size_t capacity):
-                m_data{ new T[capacity]},
+                m_data{ new T[capacity] },
                 m_cap{ capacity },
                 m_sz{ 0 } {}
 
+        static constexpr std::size_t DEFAULT_CAP{20};
+
+        // Default constructor
         vector(): vector(DEFAULT_CAP) {};
 
-        explicit vector(std::initializer_list<T> list) : vector(DEFAULT_CAP) {
+        // Initializer list constructor
+        vector(std::initializer_list<T> list) : vector(DEFAULT_CAP) {
             for (auto& entry : list) {
-                push_back(entry);
+                push_back(entry); // This will update size while pushing back entries
             }
-        };
+        }
 
         // Copy constructor
-        vector(const vector& other): m_data{ new T[other.capacity()]},
-                                     m_cap{ other.capacity() },
-                                     m_sz{ other.size() } {
-            // copy over data from other
-            std::copy(other.begin(), other.end(), m_data);
+        vector(const vector& other):
+            m_data{ new T[other.capacity()] },
+            m_cap{ other.capacity() },
+            m_sz{ other.size() } {
+            // copy over data from other vector
+
+            // use std::uninitialized_copy instead of std::copy because we are dealing with allocated memory
+            // thanks to @zaldawid
+            std::uninitialized_copy(other.begin(), other.end(), m_data);
         }
 
         ~vector(){
+            // thanks to @zaldawid
+            std::destroy_n(m_data, m_sz);
             delete[] m_data;
         }
 
@@ -63,13 +73,17 @@ namespace mc {
                 return *this;
             }
 
-            if (other.capacity() > m_cap) { // using .size() as compare might be bug
+            if (other.capacity() > m_cap) { // using .size() for compare might be a bug
                 // We need to delete our previous array because it is too
                 // small to fit the other.raw() data and create a new array
                 // which will fit the other capacity just fine
 
-                delete[] m_data; // release resource in *this
-                m_data = new T[other.capacity()];
+//                delete[] m_data; // release resource in *this
+
+                std::destroy_n(m_data, m_sz);
+                ::operator delete(m_data);
+
+                m_data = ::operator new(other.capacity() * sizeof(T));
             }
 
             // copy over data from other
@@ -82,13 +96,28 @@ namespace mc {
             return *this;
         }
 
-        [[maybe_unused]] pointer raw() const noexcept {
+        [[maybe_unused]] const_pointer raw() const noexcept {
             return m_data;
         }
 
-        [[maybe_unused]] void push_back(value_type entry) noexcept {
-            _adjust_cap();
+        [[maybe_unused]] pointer raw() noexcept {
+            return m_data;
+        }
+
+        // This cannot be noexcept because you allocate memory which can throw
+        // thanks @zaldawid
+        void push_back(const_reference entry) {
+            adjust_cap();
             m_data[m_sz++] = entry;
+//            std::construct_at(m_data[m_sz], entry);
+        }
+
+        void push_back(reference& entry) {
+            adjust_cap();
+
+            // We use std::move here
+            m_data[m_sz++] = std::move(entry);
+//            std::construct_at(m_data[m_sz], std::move(entry);
         }
 
         [[maybe_unused]] void insert(const std::size_t index, const value_type entry) {
@@ -97,7 +126,7 @@ namespace mc {
                 return;
             }
 
-            _adjust_cap();
+            adjust_cap();
 
             // std::copy will not work here for some reason?
             // error: invalid type argument of unary '*' (have 'int')
@@ -112,8 +141,7 @@ namespace mc {
         [[maybe_unused]] reference at(std::size_t index) {
             if (index >= m_sz) {
                 // Index is out of bounds
-                std::cout << "vector_error: at(i) is out of bounds" << "\n";
-                return m_data[0];
+                throw "vector_error: at(i) is out of bounds\n";
             }
 
             return m_data[index];
@@ -122,36 +150,42 @@ namespace mc {
         [[maybe_unused]] reference at(std::size_t index) const {
             if (index >= m_sz) {
                 // Index is out of bounds
-                std::cout << "vector_error: at(i) is out of bounds" << "\n";
-                return m_data[0];
+                throw "vector_error: at(i) is out of bounds\n";
             }
 
             return m_data[index];
         }
 
         [[maybe_unused]] void pop_back() noexcept {
+            std::destroy_at(m_data + m_sz - 1); // std::destroy_at calls the destructor of the object pointed to by p, as if by p->~T()
             --m_sz;
         }
 
         [[maybe_unused]] reference operator[](std::size_t index){
-            return this->at(index);
+            return m_data[index];
         }
 
         [[maybe_unused]] const_reference operator[](std::size_t index) const {
-            return this->at(index);
+            return m_data[index];
         }
 
         [[maybe_unused]] void erase() {
-            // Clear out m_data
+
+            // Destroy elements
+            std::destroy_n(m_data, m_sz);
+
+            // deallocate
             delete[] m_data;
-            m_data = new T[m_cap];
+
+            // reallocate
+            m_data = ::operator new(m_cap * sizeof(T)) ;
             m_sz = 0;
         }
 
         [[maybe_unused]] void erase(std::size_t index) {
             if (index >= m_sz) {
                 // Index is out of bounds
-                return;
+                throw "vector_error: erase(i) is out of bounds\n";
             }
 
             // Shift all data back
@@ -181,48 +215,71 @@ namespace mc {
             });
         }
 
-        T* begin() const noexcept {
+        const_pointer begin() const noexcept {
             return m_data;
         }
 
-        T* end() const noexcept {
+        const_pointer end() const noexcept {
             // This will point to the last element in our vector
             // To be used in std algorithm functions
-            return &m_data[m_cap];
+            return &m_data[m_sz]; // bug caught by @zaldawid
         }
 
     private:
-        void _adjust_cap() {
-            if (m_sz + 1 > m_cap) {
-                T* replacement = new T[m_cap + DEFAULT_CAP];
+        static constexpr std::size_t GROWTH_FACTOR{2};
+        void adjust_cap(std::size_t how_many_extra_elements = 1) {
 
-                std::copy(begin(), end(), replacement);
+            std::size_t required_capacity = m_sz + how_many_extra_elements;
+
+            if (required_capacity > m_cap) {
+                std::size_t new_capacity = m_cap;
+
+                // Calculate new capacity
+                while (new_capacity <= required_capacity)
+                    new_capacity *= GROWTH_FACTOR;
+
+                //
+                pointer replacement = static_cast<pointer>( ::operator new(sizeof(T) * new_capacity) );
+
+                // Move over contents of array to replacement
+                std::uninitialized_move(begin(), end(), replacement);
+
+                // Destroy left over elements
+                std::destroy_n(m_data, m_sz);
+
+                // Delete old memory
+                ::operator delete(m_data);
+
                 m_data = replacement;
-                m_cap += DEFAULT_CAP;
+                m_cap = new_capacity;
             }
         }
 
-        T* m_data;
+        pointer m_data;
         std::size_t m_cap;
         std::size_t m_sz;
     };
 
-    // Out stream operator for pair
+    // Out stream operator for vector
     template <typename T>
     std::ostream& operator<<(std::ostream& stream, vector<T>& other) {
-        stream << "[";
+
+        stream << "vector{";
+
         for (std::size_t i = 0; i < other.size(); i++) {
             stream << other[i];
-            // Add ' ' between every element except the last
+            // Add ', ' between every element except the last
             if (i != other.size() - 1)
                 stream << ", ";
         }
 
-        stream << "]";
+        stream << "}";
 
         return stream;
     }
 
+    // The inequality operator is automatically generated by the compiler if operator== is defined. (Since C++20)
+    // See https://en.cppreference.com/w/cpp/language/operators
     template <typename T>
     bool operator==(const vector<T>& a, const vector<T>& b) {
         // Find the lowest index to avoid out of bounds

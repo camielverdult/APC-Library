@@ -59,10 +59,10 @@ int main() {
     {
         mc::vector<std::string> a{};            // a() empty with capacity 20
         mc::vector<int> b{10};                  // b() empty with capacity 10
-        mc::vector<int_wrapper> c{1,2,3,4,5};   // c(1, 2, 3, 4, 5)
-        mc::vector<int_wrapper> d{c};           // d(1, 2, 3, 4, 5)
+        mc::vector<int_wrapper> c{1, 2, 3, 4, 5, 6, 7, 8, 9};
+        mc::vector<int_wrapper> d{c};           // d{1, 2, 3, 4, 5, 6, 7, 8, 9}
 
-
+        std::cout << d << "\n";
     }
 
 
