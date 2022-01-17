@@ -522,7 +522,7 @@ std::ostream& operator<<(std::ostream& stream, vector<T>& other) {
     return stream;
 }
 ```
-The function above will again be declared **outside** of the `pair` class.
+The function above will again be declared **outside** of the `vector` class.
 It simply takes an output stream and a vector and prints out the content of the vector in a way that you would write a vector declaration with an initializer list into a C++ program.
 
 Example:

@@ -272,7 +272,7 @@ namespace mc {
     template <typename T>
     std::ostream& operator<<(std::ostream& stream, vector<T>& other) {
 
-        stream << "vector{";
+        stream << "mc::vector{";
 
         for (std::size_t i = 0; i < other.size(); i++) {
             stream << other[i];
