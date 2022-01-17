@@ -34,7 +34,8 @@ jobs:
 
   test:
     runs-on: macos-latest
-
+    needs: build
+    
     steps:
     - name: Run generated tests
       run: ${{github.workspace}}/build/mc_lib_tests
