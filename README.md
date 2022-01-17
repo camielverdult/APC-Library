@@ -1,6 +1,6 @@
 # APC-Library
 
-![macos Build workflow](https://github.com/camielverdult/APC-Library/actions/workflows/.github/workflows/main.yml/badge.svg)
+![macos Build workflow](https://github.com/camielverdult/APC-Library/actions/workflows/cmake.yml/badge.svg)
 
 Hi all, this is our 2nd Advanced topic for Advanced Programming Concepts. For this topic we are going to dive head-first into three types of standard library types, the `pair`, `map` and `vector` type.
 
