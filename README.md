@@ -504,6 +504,83 @@ c[4]: 5
 
 That works well! But this can get very repetitive when printing vectors often. We have a solution for this! You can read about that solution below.
 
+<<<<<<< Updated upstream
+=======
+####Inserting data
+
+We obviously want to be able to store data and manipulate the vector to our desire.
+Three functions we will implement for this are the `insert`, `push_back` and `pop_back` functions.
+These functions will look as follows:
+
+```c
+void push_back(reference& entry) {
+    adjust_cap();
+    m_data[m_sz++] = std::move(entry);
+}
+
+void pop_back() noexcept {
+    std::destroy_at(m_data + m_sz - 1); // std::destroy_at calls the destructor of the object pointed to by p, as if by p->~T()
+    --m_sz;
+}
+
+void insert(const std::size_t index, const value_type entry) {
+    if (m_sz == 0 or index >= m_sz) {
+        push_back(entry);
+        return;
+    }
+
+    adjust_cap();
+
+    for (size_t i = m_sz; i >= index; i--) {
+        m_data[i + 1] = m_data[i];
+    }
+
+    m_data[index] = entry;
+    m_sz++;
+}
+```
+
+`push_back` is very straight forward. It updates the capacity of the vector and adds the entry to the back of the array.
+`pop_back` is fairly straight forward too. It removes the last element in the array and decreases the size by one.
+`insert` is only slightly more complex. It first checks whether the index is in range(if it's not, it will use `push_back`) after which it has to shift the elements of the array to the right and overwrite the data at the given index with `entry`.
+
+
+
+#### Keeping track of capacity
+
+```cpp
+static constexpr std::size_t GROWTH_FACTOR{2};
+void adjust_cap(std::size_t how_many_extra_elements = 1) {
+
+    std::size_t required_capacity = m_sz + how_many_extra_elements;
+
+    if (required_capacity > m_cap) {
+        std::size_t new_capacity = m_cap;
+
+        // Calculate new capacity
+        while (new_capacity <= required_capacity)
+            new_capacity *= GROWTH_FACTOR;
+        
+        pointer replacement = new T[new_capacity];
+
+        // Move over contents of array to replacement
+        std::uninitialized_move(begin(), end(), replacement);
+
+        // Destroy left over elements
+        std::destroy_n(m_data, m_sz);
+
+        // Delete old memory
+        delete[] m_data;
+
+        m_data = replacement;
+        m_cap = new_capacity;
+    }
+}
+```
+
+This functions checks if the amount of elements we want to store can fit in our current capacity. If our array is not big enough to store new elements, we calculate a new capacity and grow the array. We grow the array by defining a new array, copying over the contents in our current array to the replacement array. After the copy, we destroy the old objects (this calls the destructor of the elements in our array) and we free up the memory. We then set our m_data variable to point to this new piece of memory we just prepared and update the capacity.
+
+>>>>>>> Stashed changes
 
 #### Stream operator
 
