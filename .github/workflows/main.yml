@@ -1,7 +1,10 @@
 on:
   # Trigger the workflow on push
   push:
-  pull_request:
+    paths:
+      - '*.cpp'
+      - '*.h'
+      - 'CMakeLists.txt'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -100,3 +103,19 @@ jobs:
       - name: Build
         shell: bash
         run: cmake --build . --config ${{ matrix.config.build_type }}
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Built test binary artifect
+          path: build
+
+  run-tests:
+    name: mc library test
+    runs-on: macos-latest
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: Built test binary artifect
+
+      - name: Run tests
+        run: build/mc_lib_tests
