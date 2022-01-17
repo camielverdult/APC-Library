@@ -24,8 +24,8 @@ TEST(map, int_array_compare) {
     }
 
     for (std::size_t i = 0; i < 1000; i++) {
-        ASSERT_EQ(hash_map[i].first(), i) << "map is broken";
-        if (hash_map[i].first() != i) {
+        ASSERT_EQ(hash_map[i].first, i) << "map is broken";
+        if (hash_map[i].first != i) {
             break;
         }
     }
@@ -61,8 +61,8 @@ TEST(map, sort) {
 
     for (std::size_t i = 0; i < 1000; i++) {
         auto value = numbers[i];
-        ASSERT_EQ(hash_map[i].first(), value) << "mc::map sort failed!";
-        if (hash_map[i].first() != value) {
+        ASSERT_EQ(hash_map[i].first, value) << "mc::map sort failed!";
+        if (hash_map[i].first != value) {
             break;
         }
     }
@@ -89,8 +89,8 @@ TEST(map, insert) {
 
     for (std::size_t i = 0; i < 10; i++) {
         auto value = verify_vector[i];
-        ASSERT_EQ(hash_map[i].first(), value) << "mc::map insert failed!";
-        if (hash_map[i].first() != value) {
+        ASSERT_EQ(hash_map[i].first, value) << "mc::map insert failed!";
+        if (hash_map[i].first != value) {
             break;
         }
     }
