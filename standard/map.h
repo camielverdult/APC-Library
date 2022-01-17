@@ -162,7 +162,7 @@ namespace mc {
         vector_template m_vector;
     };
 
-    // Out stream operator for pair
+    // Out stream operator for map
     template<typename TKey, typename TValue>
     std::ostream& operator<<(std::ostream& stream, map<TKey, TValue>& other) {
         stream << other.raw();

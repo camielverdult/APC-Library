@@ -80,5 +80,7 @@ int main() {
     // Copy constructor
     mc::map copy = test;
 
+    std::cout << copy << "\n";
+
     return 0;
 }

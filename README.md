@@ -667,58 +667,22 @@ test.push_back({'c', "cat"});
 mc::map copy = test;
 ```
 
-We can manually print the values in the vector to the console to check if the constructors worked correctly:
+To print the values in the map, we can call the following:
 
 ```cpp
-for (std::size_t i = 0; i < c.size(); i++)
-    std::cout << "c[" << i << "]: " << c[i] << "\n";
+std::cout << copy << "\n";
 ```
 
 This generates the following output:
 ```
-c[0]: 1
-c[1]: 2
-c[2]: 3
-c[3]: 4
-c[4]: 5
+mc::vector{(a, apple), (g, giraffe), (w, wonderland), (c, cat)}
 ```
 
-That works well! But this can get very repetitive when printing vectors often. We have a solution for this! You can read about that solution below.
+It prints `mc::vector` because map is really just a wrapper around vector.
 
 #### Keeping track of capacity
 
-```cpp
-static constexpr std::size_t GROWTH_FACTOR{2};
-void adjust_cap(std::size_t how_many_extra_elements = 1) {
-
-    std::size_t required_capacity = m_sz + how_many_extra_elements;
-
-    if (required_capacity > m_cap) {
-        std::size_t new_capacity = m_cap;
-
-        // Calculate new capacity
-        while (new_capacity <= required_capacity)
-            new_capacity *= GROWTH_FACTOR;
-        
-        pointer replacement = new T[new_capacity];
-
-        // Move over contents of array to replacement
-        std::uninitialized_move(begin(), end(), replacement);
-
-        // Destroy left over elements
-        std::destroy_n(m_data, m_sz);
-
-        // Delete old memory
-        delete[] m_data;
-
-        m_data = replacement;
-        m_cap = new_capacity;
-    }
-}
-```
-
-This functions checks if the amount of elements we want to store can fit in our current capacity. If our array is not big enough to store new elements, we calculate a new capacity and grow the array. We grow the array by defining a new array, copying over the contents in our current array to the replacement array. After the copy, we destroy the old objects (this calls the destructor of the elements in our array) and we free up the memory. We then set our m_data variable to point to this new piece of memory we just prepared and update the capacity.
-
+This gets taken care of by the vector when we push back! The map class does not have to do this.
 
 #### Stream operator
 
@@ -729,35 +693,13 @@ It will look like this:
 To be able to use this in any scenario, such as file writing, we also want a separate `std::ostream::operator<<` overload.
 It will look as follows:
 ```cpp
-// Out stream operator for vector
-template <typename T>
-std::ostream& operator<<(std::ostream& stream, vector<T>& other) {
-    stream << "{";
-    
-    for (std::size_t i = 0; i < other.size(); i++) {
-        stream << other[i];
-        
-        // Add ', ' between every element except the last
-        if (i != other.size() - 1)
-            stream << ", ";
-    }
-    
-    stream << "}";
-    
-    return stream;
+// Out stream operator for map
+template<typename TKey, typename TValue>
+std::ostream& operator<<(std::ostream& stream, map<TKey, TValue>& other) {
+stream << other.raw();
+return stream;
+}
 }
 ```
-The function above will again be declared **outside** of the `vector` class.
-It simply takes an output stream and a vector and prints out the content of the vector in a way that you would write a vector declaration with an initializer list into a C++ program.
+The function above will again be declared **outside** of the `map` class.  It simply takes an output stream and a map and writes the underlying vector to the stream. The vector will handle the outputting to this stream.  
 
-Example:
-```cpp
-mc::vector<int_wrapper> c{1, 2, 3, 4, 5, 6, 7, 8, 9};
-mc::vector<int_wrapper> d{c}; // d{1, 2, 3, 4, 5, 6, 7, 8, 9}
-
-std::cout << d << "\n";
-```
-Gives the following output:
-```
-vector{1, 2, 3, 4, 5, 6, 7, 8, 9}
-```
