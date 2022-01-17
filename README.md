@@ -504,8 +504,6 @@ c[4]: 5
 
 That works well! But this can get very repetitive when printing vectors often. We have a solution for this! You can read about that solution below.
 
-<<<<<<< Updated upstream
-=======
 ####Inserting data
 
 We obviously want to be able to store data and manipulate the vector to our desire.
@@ -545,7 +543,6 @@ void insert(const std::size_t index, const value_type entry) {
 `insert` is only slightly more complex. It first checks whether the index is in range(if it's not, it will use `push_back`) after which it has to shift the elements of the array to the right and overwrite the data at the given index with `entry`.
 
 
-
 #### Keeping track of capacity
 
 ```cpp
@@ -580,7 +577,6 @@ void adjust_cap(std::size_t how_many_extra_elements = 1) {
 
 This functions checks if the amount of elements we want to store can fit in our current capacity. If our array is not big enough to store new elements, we calculate a new capacity and grow the array. We grow the array by defining a new array, copying over the contents in our current array to the replacement array. After the copy, we destroy the old objects (this calls the destructor of the elements in our array) and we free up the memory. We then set our m_data variable to point to this new piece of memory we just prepared and update the capacity.
 
->>>>>>> Stashed changes
 
 #### Stream operator
 
