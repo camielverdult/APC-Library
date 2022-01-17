@@ -86,3 +86,28 @@ TEST(vector, operator_is) {
 
     ASSERT_EQ(test, copy) << "operator= does not work!";
 }
+
+TEST(vector, zalewski_idea) {
+    struct int_wrapper{
+        int value;
+        int_wrapper()= default;
+        int_wrapper(int v): value{v}{}
+
+        int_wrapper& operator=(int v){
+            value = v;
+            return *this;
+        }
+
+        operator int() const {
+            return value;
+        }
+    };
+
+    mc::vector<int_wrapper> vec{3,6,7,4};
+
+    mc::vector<int> compare{3, 6, 7, 4};
+
+    // int_wrapper and int are different types, compare them by entry instead of by vector template
+    for (std::size_t i = 0; i < vec.size(); i++)
+        ASSERT_EQ(vec[i], compare[i]) << "int_wrapper vector is not the same as a normal int vector!";
+}
