@@ -67,7 +67,6 @@ namespace mc {
             // see https://stackoverflow.com/questions/6380862/how-to-provide-a-swap-function-for-my-class
             using std::swap; // enable 'std::swap' to be found
             swap(first, second);
-            return *this;
         }
     };
 

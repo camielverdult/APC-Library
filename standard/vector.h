@@ -83,7 +83,7 @@ namespace mc {
                 std::destroy_n(m_data, m_sz);
                 ::operator delete(m_data);
 
-                m_data = ::operator new(other.capacity() * sizeof(T));
+                m_data = new T[other.capacity()];
             }
 
             // copy over data from other
@@ -210,7 +210,7 @@ namespace mc {
              * This function will fail if typename T has no operator > function
              */
 
-            std::sort(begin(), end(), [](reference a, reference b){
+            std::sort(begin(), end(), [](const_reference a, const_reference b){
                 return a > b;
             });
         }
