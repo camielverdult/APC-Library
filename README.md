@@ -504,40 +504,6 @@ c[4]: 5
 
 That works well! But this can get very repetitive when printing vectors often. We have a solution for this! You can read about that solution below.
 
-#### Keeping track of capacity
-
-```cpp
-static constexpr std::size_t GROWTH_FACTOR{2};
-void adjust_cap(std::size_t how_many_extra_elements = 1) {
-
-    std::size_t required_capacity = m_sz + how_many_extra_elements;
-
-    if (required_capacity > m_cap) {
-        std::size_t new_capacity = m_cap;
-
-        // Calculate new capacity
-        while (new_capacity <= required_capacity)
-            new_capacity *= GROWTH_FACTOR;
-        
-        pointer replacement = new T[new_capacity];
-
-        // Move over contents of array to replacement
-        std::uninitialized_move(begin(), end(), replacement);
-
-        // Destroy left over elements
-        std::destroy_n(m_data, m_sz);
-
-        // Delete old memory
-        delete[] m_data;
-
-        m_data = replacement;
-        m_cap = new_capacity;
-    }
-}
-```
-
-This functions checks if the amount of elements we want to store can fit in our current capacity. If our array is not big enough to store new elements, we calculate a new capacity and grow the array. We grow the array by defining a new array, copying over the contents in our current array to the replacement array. After the copy, we destroy the old objects (this calls the destructor of the elements in our array) and we free up the memory. We then set our m_data variable to point to this new piece of memory we just prepared and update the capacity.
-
 
 #### Stream operator
 
@@ -580,6 +546,43 @@ Gives the following output:
 ```
 vector{1, 2, 3, 4, 5, 6, 7, 8, 9}
 ```
+
+#### Using `mc::vector` with std algorithms
+The standard has some great algorithmic functions, like `std::sort`! These take in an iterator to your data type and take away the need for implementing your own sorting, accumulation or other function. These iterators are commonly retrieved by calling `.begin()` and `.end()` or `std::begin()` and `std::end()` on an object.
+
+#### Keeping track of capacity
+
+```cpp
+static constexpr std::size_t GROWTH_FACTOR{2};
+void adjust_cap(std::size_t how_many_extra_elements = 1) {
+
+    std::size_t required_capacity = m_sz + how_many_extra_elements;
+
+    if (required_capacity > m_cap) {
+        std::size_t new_capacity = m_cap;
+
+        // Calculate new capacity
+        while (new_capacity <= required_capacity)
+            new_capacity *= GROWTH_FACTOR;
+        
+        pointer replacement = new T[new_capacity];
+
+        // Move over contents of array to replacement
+        std::uninitialized_move(begin(), end(), replacement);
+
+        // Destroy left over elements
+        std::destroy_n(m_data, m_sz);
+
+        // Delete old memory
+        delete[] m_data;
+
+        m_data = replacement;
+        m_cap = new_capacity;
+    }
+}
+```
+
+This functions checks if the amount of elements we want to store can fit in our current capacity. If our array is not big enough to store new elements, we calculate a new capacity and grow the array. We grow the array by defining a new array, copying over the contents in our current array to the replacement array. After the copy, we destroy the old objects (this calls the destructor of the elements in our array) and we free up the memory. We then set our m_data variable to point to this new piece of memory we just prepared and update the capacity.
 
 
 ##`mc::map`
