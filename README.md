@@ -450,8 +450,8 @@ vector(const vector& other): m_data{ new T[other.capacity()]},
 ```
 With these constructors we can set up vectors in the main like:
 ```c
-mc::vector<std::string> a{};    // a() empty with capacity 20
-mc::vector<int> b{10};          // b() empty with capacity 10
+mc::vector<std::string> a{};            // a() empty with capacity 20
+mc::vector<int> b{10};                  // b() empty with capacity 10
 mc::vector<int_wrapper> c{1,2,3,4,5};   // c(1, 2, 3, 4, 5)
 mc::vector<int_wrapper> d{c};           // d(1, 2, 3, 4, 5)
 ```

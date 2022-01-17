@@ -57,8 +57,11 @@ int main() {
 ///---------------------------------------------------------------------------------------------------------------------
 /// mc::vector
     {
-        mc::vector<int_wrapper> a{1,2,3,4,5};   // c(1, 2, 3, 4, 5)
-        mc::vector<int_wrapper> b{a};           // d(1, 2, 3, 4, 5)
+        mc::vector<std::string> a{};            // a() empty with capacity 20
+        mc::vector<int> b{10};                  // b() empty with capacity 10
+        mc::vector<int_wrapper> c{1,2,3,4,5};   // c(1, 2, 3, 4, 5)
+        mc::vector<int_wrapper> d{c};           // d(1, 2, 3, 4, 5)
+
 
     }
 
