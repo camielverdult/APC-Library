@@ -78,10 +78,8 @@ namespace mc {
                 // small to fit the other.raw() data and create a new array
                 // which will fit the other capacity just fine
 
-//                delete[] m_data; // release resource in *this
-
                 std::destroy_n(m_data, m_sz);
-                ::operator delete(m_data);
+                delete[] m_data;
 
                 m_data = new T[other.capacity()];
             }
@@ -178,7 +176,7 @@ namespace mc {
             delete[] m_data;
 
             // reallocate
-            m_data = ::operator new(m_cap * sizeof(T)) ;
+            m_data = new T[m_cap];
             m_sz = 0;
         }
 
@@ -225,6 +223,16 @@ namespace mc {
             return &m_data[m_sz]; // bug caught by @zaldawid
         }
 
+        pointer begin() noexcept {
+            return m_data;
+        }
+
+        pointer end() noexcept {
+            // This will point to the last element in our vector
+            // To be used in std algorithm functions
+            return &m_data[m_sz]; // bug caught by @zaldawid
+        }
+
     private:
         static constexpr std::size_t GROWTH_FACTOR{2};
         void adjust_cap(std::size_t how_many_extra_elements = 1) {
@@ -239,7 +247,7 @@ namespace mc {
                     new_capacity *= GROWTH_FACTOR;
 
                 //
-                pointer replacement = static_cast<pointer>( ::operator new(sizeof(T) * new_capacity) );
+                pointer replacement = new T[new_capacity];
 
                 // Move over contents of array to replacement
                 std::uninitialized_move(begin(), end(), replacement);
@@ -248,7 +256,7 @@ namespace mc {
                 std::destroy_n(m_data, m_sz);
 
                 // Delete old memory
-                ::operator delete(m_data);
+                delete[] m_data;
 
                 m_data = replacement;
                 m_cap = new_capacity;
