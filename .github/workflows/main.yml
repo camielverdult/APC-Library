@@ -9,14 +9,6 @@ jobs:
     name: "macOS Latest Clang"
     runs-on: macos-latest
 
-    config:
-      artifact: "macos_clang.7z",
-      build_type: "Release",
-      cc: "clang",
-      cxx: "clang++",
-      archiver: "7za a",
-      generators: "Ninja"
-
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
@@ -41,10 +33,10 @@ jobs:
           cmake \
             -S . \
             -B . \
-            -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} \
-            -G "${{ matrix.config.generators }}" \
+            -DCMAKE_BUILD_TYPE="Release" \
+            -G "Ninja" \
             -DCMAKE_INSTALL_PREFIX:PATH=instdir
 
       - name: Build
         shell: bash
-        run: cmake --build . --config ${{ matrix.config.build_type }}
+        run: cmake --build . --config "Release"
