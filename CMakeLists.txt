@@ -62,4 +62,7 @@ add_executable(
 # Link our test executable code with gtest
 target_link_libraries(${tests_target} gtest_main)
 
-add_test(NAME LibraryTest COMMAND ${tests_target})
+find_path(BUILD_PATH cmake-build-debug)
+find_path(BUILD_PATH build)
+
+add_test(NAME LibraryTest COMMAND ${BUILD_PATH}/${tests_target})
