@@ -442,10 +442,10 @@ explicit vector(std::size_t capacity):
         m_cap{ capacity },
         m_sz{ 0 } {}
 
-// Default constructor
+// Default constructor using a DEFAULT_CAP of 20
 vector(): vector(DEFAULT_CAP) {};
 
-
+// Parameterized constructor with initializer list
 explicit vector(std::initializer_list<T> list) : vector(DEFAULT_CAP) {
     for (auto& entry : list) {
         push_back(entry);
@@ -459,5 +459,11 @@ vector(const vector& other): m_data{ new T[other.capacity()]},
     // copy over data from other
     std::copy(other.begin(), other.end(), m_data);
 }
-
+```
+With these constructors we can set up vectors in the main like:
+```c
+mc::vector<std::string> a{};    // a() empty with capacity 20
+mc::vector<int> b{10};          // b() empty with capacity 10
+mc::vector<int_wrapper> c{1,2,3,4,5};   // c(1, 2, 3, 4, 5)
+mc::vector<int_wrapper> d{c};           // d(1, 2, 3, 4, 5)
 ```

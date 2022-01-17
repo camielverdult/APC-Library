@@ -29,121 +29,39 @@ int main() {
      * Please take a look at the header for all functions, some are not used here
      */
 
-//    mc::map<std::string, uint64_t> values;
-//
-//    values.push_back(mc::pair<std::string, uint64_t>{"Hi", 1});
-//    std::cout << values << "\n";
-//
-//    mc::vector<int> test{1, 2, 3, 4};
-//
-//    test.insert(0, 0);
-//
-//    return 0;
-//
-//    mc::pair pairOfVectorInt{std::vector<std::string>{"hallo"}, 1};
-//
-//    mc::pair pairOfInts{1, 2};
-//
-//    mc::pair pairOfStrings{std::string("Hello"), std::string("World!")};
-//
-//    std::vector<mc::pair<std::string, int>> people{
-//        mc::pair<std::string, int>{"Marnix", 20},
-//        mc::pair<std::string, int>{"Camiel", 20}
-//    };
-//
-//    std::cout << "People: " << std::endl;
-//
-//    for (auto& person : people) {
-//        std::cout << person << std::endl;
-//    }
-//
-//    // This won't work! The types are different for both first and second
-//    // pairOfInts.swap();
-//
-//    // This will work fine on the other hand
-//    std::cout << "Swap print: " << mc::pair<int, int>{1, 20}.swap() << std::endl;
-//
-//    // Test our vector!
-//    mc::vector<std::string> vec{};
-//    vec.push_back("Hello");
-//    vec.push_back("Alice.");
-//    vec.push_back("How");
-//    vec.push_back("are");
-//    vec.push_back("you");
-//    vec.push_back("today?");
-//
-//    std::cout << "Vector print: " << vec << std::endl;
-//
-//    mc::pair<std::string, int> marnix{"Marnix", 20};
-//    mc::pair<std::string, int> camiel{"Camiel", 20};
-//
-//    mc::pair<int, std::string> setie;
-//
-//    mc::pair<std::string, int> pairArray[10];
-//
-//    pairArray[1] = camiel;
-//
-//    std::cout << pairArray[1] << std::endl;
-//
-//    mc::vector<mc::pair<std::string, int>> set;
-//
-//    set.push_back(mc::pair<std::string, int>{"One", 1});
-//    set.push_back(mc::pair<std::string, int>{"Two", 2});
-//
-//    // Delete the second pair out of our vector
-//    set.erase(1);
-//    std::cout << set << std::endl;
-//
-//    // Fill an array with random numbers and sort them
-//    mc::vector<uint32_t> unsorted;
-//
-//    // Use mersenne twister to generate random numbers, see our previous topic
-//    // For more information about the working of the mersenne twister
-//    std::mt19937 mtw;
-//    mtw.seed((int)time(nullptr));
-//
-//    int iterations = 100000;
-//
-//    std::cout << "Iterations: " << iterations << std::endl;
-//
-//    for (int i = 0; i < iterations; i++) {
-//        unsorted.push_back(mtw());
-//    }
-//
-//    auto start = std::chrono::high_resolution_clock::now();
-//
-//    unsorted.sort();
-//
-//    auto finish = std::chrono::high_resolution_clock::now();
-//    std::cout << "Sorted " << unsorted.size() << " elements in " << std::chrono::duration_cast<std::chrono::milliseconds>(finish-start).count() << " ms\n";
-//
-//    return 0;
+///---------------------------------------------------------------------------------------------------------------------
+/// mc::pair
+    {
+        mc::pair<int_wrapper, int_wrapper> a{};     // sets first and second to 0
+        a.first = 1;              // a == (1, 0)
+        a.second = 2;             // a == (1, 2)
+
+        mc::pair<int, std::string> b{1, "hello"};   // b == (1, "hello")
+        mc::pair<int, std::string> c{b};            // c == (1, "hello")
+
+        auto d = mc::make_pair(1, 2.4);
+
+        std::cout << "a: (" << a.first << ", " << a.second << ")\n";
+        std::cout << "b: (" << b.first << ", " << b.second << ")\n";
+        std::cout << "c: (" << c.first << ", " << c.second << ")\n";
+        std::cout << "d: (" << d.first << ", " << d.second << ")\n";
+
+        mc::pair<int, int> e{1, 2};
+        mc::pair<int, int> f{1, 3};
+        mc::pair<int, int> g{2, 5};
+
+        std::cout << (e < f) << ", " << (e > g) << ", " << (f > g) << std::endl;
+
+        std::cout << "e" << e << ", f" << f << ", g" << g << std::endl;
+    }
+///---------------------------------------------------------------------------------------------------------------------
+/// mc::vector
+    {
+        mc::vector<int_wrapper> a{1,2,3,4,5};   // c(1, 2, 3, 4, 5)
+        mc::vector<int_wrapper> b{a};           // d(1, 2, 3, 4, 5)
+
+    }
 
 
-//    mc::vector<int_wrapper> vec{3,6,7,4};
-//
-//    mc::pair<int_wrapper, int_wrapper> a{};     // sets first and second to 0
-//    a.first = 1;              // a == (1, 0)
-//    a.second = 2;             // a == (1, 2)
-//
-//    mc::pair<int, std::string> b{1, "hello"};   // b == (1, "hello")
-//    mc::pair<int, std::string> c{b};            // c == (1, "hello")
-//
-//    auto d = mc::make_pair(1, 2.4);
-//
-//    std::cout << "a: (" << a.first << ", " << a.second << ")\n";
-//    std::cout << "b: (" << b.first << ", " << b.second << ")\n";
-//    std::cout << "c: (" << c.first << ", " << c.second << ")\n";
-//    std::cout << "d: (" << d.first << ", " << d.second << ")\n";
-//
-//    std::cout << vec << std::endl;
-
-    mc::pair<int, int> a{1,2};
-    mc::pair<int, int> b{1,3};
-    mc::pair<int, int> c{2,5};
-
-    std::cout << (a<b) << ", " << (a>c) << ", " << (b>c) << std::endl;
-
-    std::cout << "a" << a << ", b" << b << ", c" << c << std::endl;
     return 0;
 }
