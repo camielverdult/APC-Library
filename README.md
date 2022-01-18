@@ -387,8 +387,8 @@ It will look as follows:
 // Out stream operator for pair
 template <typename T1, typename T2>
 std::ostream& operator<<(std::ostream& stream, pair<T1, T2>& other) {
-stream << "(" << other.first << ", " << other.second << ")";
-return stream;
+    stream << "(" << other.first << ", " << other.second << ")";
+    return stream;
 }
 ```
 The function above will again be declared **outside** of the `pair` class. 
