@@ -503,7 +503,7 @@ c[4]: 5
 
 That works well! But this can get very repetitive when printing vectors often. We have a solution for this! You can read about that solution below.
 
-####Accessing data
+#### Accessing data
 
 What is a data structure worth if you can't access any of the data? Not a dime we think.
 So let's implement some functions that will let us access the data of our `mc::vector`.
@@ -532,7 +532,7 @@ reference operator[](std::size_t index){
 
 This function is not much more complex. Since the raw array that is used in our vector already has functionality for using index accessing, we can simply use that and return the m_data on the given index.
 
-####Inserting data
+#### Inserting data
 
 We obviously also want to be able to easily add data to the vector.
 Three functions we will implement for this are the `insert`, `push_back` and `pop_back` functions.
@@ -710,7 +710,7 @@ void adjust_cap(std::size_t how_many_extra_elements = 1) {
 This functions checks if the amount of elements we want to store can fit in our current capacity. If our array is not big enough to store new elements, we calculate a new capacity and grow the array. We grow the array by defining a new array, copying over the contents in our current array to the replacement array. After the copy, we destroy the old objects (this calls the destructor of the elements in our array) and we free up the memory. We then set our m_data variable to point to this new piece of memory we just prepared and update the capacity.
 
 
-##`mc::map`
+## `mc::map`
 
 This class stores a list of key value pairs. We will start off our map class the same way we started our vector and pair classes:
 ```cpp
@@ -760,7 +760,7 @@ using pair_template = mc::pair<TKey, TValue>;
 
 So, in full, this is a variable of type `mc::vector<mc::pair<Tkey, TValue>>`
 
-####Constructors
+#### Constructors
 
 We will now set up the constructors, which will look as follows:
 ```cpp
