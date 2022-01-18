@@ -439,7 +439,7 @@ using const_reference = const T&;
 ``` 
 This means that m_data is a pointer to the first element of type T in the array. The vector class keeps track of the amount of elements used in the array and will automatically grow the array when the capacity is almost used. This is explained below
 
-####Constructors
+#### Constructors
 
 We will now set up the constructors, which will look as follows:
 ```cpp
