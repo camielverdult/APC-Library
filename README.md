@@ -411,7 +411,7 @@ Of course there are some more functions to the `std::pair` class that we won't g
 We have gained a sufficient understanding of how a `pair` works and what we can do with it.
 Time to move on to `mc::vector`!
 
-##`mc::vector`
+## `mc::vector`
 
 We will start off our vector class the same way we started our pair class:
 ```cpp
