@@ -218,7 +218,7 @@ namespace mc {
         }
 
         const_pointer end() const noexcept {
-            // This will point to the last element in our vector
+            // This will point to the last USED element in our vector
             // To be used in std algorithm functions
             return &m_data[m_sz]; // bug caught by @zaldawid
         }
@@ -228,7 +228,7 @@ namespace mc {
         }
 
         pointer end() noexcept {
-            // This will point to the last element in our vector
+            // This will point to the last USED element in our vector
             // To be used in std algorithm functions
             return &m_data[m_sz]; // bug caught by @zaldawid
         }
